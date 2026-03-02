@@ -184,6 +184,55 @@ export default function HomepagePage({ baseUrl, categories }: Readonly<HomepageP
     };
   }, [filteredCategories]);
 
+  useEffect(() => {
+    if (filteredCategories.length === 0) {
+      return;
+    }
+
+    const sectionIds = filteredCategories.map((category) => slugify(category.name));
+    let ticking = false;
+
+    const updateActiveFromScroll = (): void => {
+      const offsetTop = 220;
+      let nextActive = sectionIds[0];
+
+      for (const id of sectionIds) {
+        const section = document.getElementById(id);
+        if (!section) {
+          continue;
+        }
+
+        const top = section.getBoundingClientRect().top;
+        if (top - offsetTop <= 0) {
+          nextActive = id;
+        } else {
+          break;
+        }
+      }
+
+      setActiveCategory((current) => (current === nextActive ? current : nextActive));
+      ticking = false;
+    };
+
+    const onScroll = (): void => {
+      if (ticking) {
+        return;
+      }
+
+      ticking = true;
+      window.requestAnimationFrame(updateActiveFromScroll);
+    };
+
+    updateActiveFromScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [filteredCategories]);
+
   const handleCategoryClick = (categoryName: string): void => {
     const targetId = slugify(categoryName);
     setActiveCategory(targetId);
