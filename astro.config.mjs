@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 const repoName = "toi-caphe-menu";
 
 export default defineConfig({
-  site: "https://example.github.io",
+  site: "https://evolis-work.github.io",
   base: `/${repoName}`,
   output: "static",
   integrations: [react()],
