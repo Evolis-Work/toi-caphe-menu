@@ -233,6 +233,20 @@ export default function HomepagePage({ baseUrl, categories }: Readonly<HomepageP
     };
   }, [filteredCategories]);
 
+  useEffect(() => {
+    if (!activeCategory) {
+      return;
+    }
+
+    const tabScroll = tabScrollRef.current;
+    if (!tabScroll) {
+      return;
+    }
+
+    const activeTab = tabScroll.querySelector<HTMLButtonElement>(`button[data-category-id="${activeCategory}"]`);
+    activeTab?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [activeCategory]);
+
   const handleCategoryClick = (categoryName: string): void => {
     const targetId = slugify(categoryName);
     setActiveCategory(targetId);
@@ -288,6 +302,7 @@ export default function HomepagePage({ baseUrl, categories }: Readonly<HomepageP
                 <button
                   className="relative h-full shrink-0 flex items-center whitespace-nowrap group"
                   key={category.name}
+                  data-category-id={slugify(category.name)}
                   type="button"
                   onClick={() => {
                     handleCategoryClick(category.name);
