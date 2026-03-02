@@ -1,0 +1,42 @@
+[
+  {
+    "category": "Ca phe",
+    "name": "Ca phe sua da",
+    "price": "29000",
+    "description": "Dam vi ca phe va sua dac.",
+    "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&auto=format&fit=crop",
+    "available": "TRUE",
+    "bestseller": "TRUE",
+    "temp": "cold"
+  },
+  {
+    "category": "Ca phe",
+    "name": "Bac xiu",
+    "price": "35000",
+    "description": "Sua nhieu hon ca phe, vi nhe.",
+    "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&auto=format&fit=crop",
+    "available": "TRUE",
+    "bestseller": "FALSE",
+    "temp": "hot"
+  },
+  {
+    "category": "Tra",
+    "name": "Tra dao cam sa",
+    "price": "42000",
+    "description": "Thanh mat voi dao va cam tuoi.",
+    "image": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800&auto=format&fit=crop",
+    "available": "FALSE",
+    "bestseller": "FALSE",
+    "temp": "cold"
+  },
+  {
+    "category": "Da xay",
+    "name": "Cookie da xay",
+    "price": "49000",
+    "description": "Thom beo va mat lanh.",
+    "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=800&auto=format&fit=crop",
+    "available": "TRUE",
+    "bestseller": "TRUE",
+    "temp": "cold"
+  }
+]

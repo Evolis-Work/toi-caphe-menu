@@ -1,0 +1,38 @@
+---
+import HomepagePage from "../components/homepage/HomepagePage";
+import { fetchMenu } from "../lib/fetchMenu";
+import "../styles/global.css";
+
+const baseUrl = import.meta.env.BASE_URL;
+const withBase = (path: string): string => `${baseUrl.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
+const faviconUrl = withBase("favicon.svg");
+const ogImageUrl = withBase("og-menu.svg");
+
+const categories = await fetchMenu();
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>T.O.I Cà Phê - Thực Đơn Thuần Việt</title>
+    <meta name="description" content="Menu online Toi Ca Phe" />
+    <meta property="og:title" content="T.O.I Cà Phê - Thực Đơn Thuần Việt" />
+    <meta property="og:description" content="Menu online Toi Ca Phe" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImageUrl} />
+    <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen flex flex-col overflow-x-hidden">
+    <HomepagePage categories={categories} baseUrl={baseUrl} client:load />
+  </body>
+</html>

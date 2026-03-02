@@ -1,0 +1,97 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+const sheetEditUrl = import.meta.env.SHEET_EDIT_URL || "https://docs.google.com/spreadsheets";
+const workflowUrl = import.meta.env.WORKFLOW_URL || "https://github.com";
+---
+
+<MainLayout
+  title="Quan Ly Menu | Toi Ca Phe"
+  description="Trang huong dan cap nhat menu nhanh cho chu quan"
+  canonicalUrl={Astro.url.href}
+>
+  <header class="hero">
+    <p class="eyebrow">Toi Ca Phe</p>
+    <h1>Trang Quan Ly Menu</h1>
+    <p>Cap nhat gia, them mon moi va cho build lai website ma khong can dev.</p>
+  </header>
+
+  <section class="admin-panel">
+    <h2>Cap nhat nhanh</h2>
+    <div class="admin-actions">
+      <a class="button" href={sheetEditUrl} target="_blank" rel="noreferrer">Mo Google Sheet</a>
+      <a class="button button-secondary" href={workflowUrl} target="_blank" rel="noreferrer"
+        >Run GitHub Workflow</a
+      >
+    </div>
+    <p class="hint">Sau khi sua Sheet, cho he thong rebuild tu dong hoac bam Run Workflow de cap nhat ngay.</p>
+  </section>
+
+  <section class="admin-panel">
+    <h2>Cot du lieu bat buoc</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cot</th>
+            <th>Vi du</th>
+            <th>Ghi chu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>category</td>
+            <td>Ca phe</td>
+            <td>Ten danh muc</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>Ca phe sua da</td>
+            <td>Ten mon</td>
+          </tr>
+          <tr>
+            <td>price</td>
+            <td>29000</td>
+            <td>Chi nhap so</td>
+          </tr>
+          <tr>
+            <td>description</td>
+            <td>Dam vi ca phe va sua dac</td>
+            <td>Co the de trong</td>
+          </tr>
+          <tr>
+            <td>image</td>
+            <td>https://...jpg</td>
+            <td>Link anh public</td>
+          </tr>
+          <tr>
+            <td>available</td>
+            <td>TRUE</td>
+            <td>TRUE hoac FALSE</td>
+          </tr>
+          <tr>
+            <td>bestseller</td>
+            <td>FALSE</td>
+            <td>TRUE hoac FALSE</td>
+          </tr>
+          <tr>
+            <td>temp</td>
+            <td>cold</td>
+            <td>`hot` hoac `cold` hoac `both`</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="admin-panel">
+    <h2>Quy trinh them mon moi</h2>
+    <ol>
+      <li>Mo Google Sheet.</li>
+      <li>Them 1 dong moi va dien du cot.</li>
+      <li>Dat <code>available=TRUE</code> neu con mon.</li>
+      <li>Luu Sheet, cho rebuild (toi da 30 phut) hoac bam Run Workflow.</li>
+      <li>Mo trang menu de kiem tra ket qua.</li>
+    </ol>
+  </section>
+</MainLayout>

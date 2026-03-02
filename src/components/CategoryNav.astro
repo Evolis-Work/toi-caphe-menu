@@ -1,0 +1,17 @@
+---
+interface Props {
+  categories: Array<{ id: string; label: string }>;
+}
+
+const { categories } = Astro.props;
+---
+
+<nav class="category-nav" aria-label="Danh muc mon">
+  {
+    categories.map((category) => (
+      <a href={`#${category.id}`} class="chip" data-category-link={category.id}>
+        {category.label}
+      </a>
+    ))
+  }
+</nav>

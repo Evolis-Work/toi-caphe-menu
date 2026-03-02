@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+@theme {
+  --color-scandi-bg: #ffffff;
+  --color-scandi-accent: #f9f7f2;
+  --color-scandi-border: #eeeeee;
+  --color-scandi-text: #1a1a1a;
+  --color-scandi-muted: #888888;
+  --color-scandi-black: #2d2d2d;
+
+  --font-sans: "Inter", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans bg-scandi-bg text-scandi-text;
+    letter-spacing: 0.025em;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.category-fade-right {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+/* Admin page styles */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.hero {
+  background: linear-gradient(135deg, #3f2b1f, #8c4f2a);
+  color: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  font-size: 0.75rem;
+}
+
+.hero h1 {
+  margin: 0.25rem 0;
+  font-size: 1.75rem;
+}
+
+.hero p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.footer {
+  margin: 2rem 0 1rem;
+  color: #705a4a;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.footer a {
+  color: #a04d22;
+}
+
+.admin-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #eadfce;
+  border-radius: 0.85rem;
+  background: #fffaf4;
+}
+
+.admin-panel h2 {
+  margin: 0 0 0.75rem;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #a04d22;
+  background: #a04d22;
+  color: #fff;
+  font-weight: 600;
+}
+
+.button-secondary {
+  background: #fff;
+  color: #a04d22;
+}
+
+.hint {
+  color: #705a4a;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  border: 1px solid #eadfce;
+  padding: 0.5rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+th {
+  background: #f7ecdf;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem 1.5rem;
+  }
+
+  .hero {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>T.O.I Cà Phê - Scandinavian Digital Menu</title>
+    <script
+      type="text/javascript"
+      nonce="b982d0344afb4e598a9980f8b15"
+      src="//local.adguard.org?ts=1772463602530&type=content-script&dmn=contribution.usercontent.google.com&url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ6Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpZCiVodG1sXzQyZGVjZjM5ZDg0ZDQ0ZmI4ODk0YjI0N2Y4ZDExYWQxEgsSBxCuzIfsoAwYAZIBIgoKcHJvamVjdF9pZBIUQhIzOTI2MjY1NTE4ODM2MjIzMDA%26filename%3D%26opi%3D89354086&app=msedge.exe&css=3&js=1&rel=1&rji=1&sbe=1"
+    ></script><script
+      type="text/javascript"
+      nonce="b982d0344afb4e598a9980f8b15"
+      src="//local.adguard.org?ts=1772463602530&name=AdGuard%20Extra&type=user-script"
+    ></script><script
+      src="https://cdn.tailwindcss.com?plugins=forms,container-queries"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/tailwindcss">
+      :root {
+        --scandi-bg: #ffffff;
+        --scandi-accent: #f9f7f2;
+        --scandi-border: #eeeeee;
+        --scandi-text-main: #1a1a1a;
+        --scandi-text-muted: #888888;
+        --scandi-primary: #2d2d2d;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        letter-spacing: 0.025em;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .category-fade-right {
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 1) 100%
+        );
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "scandi-bg": "var(--scandi-bg)",
+              "scandi-accent": "var(--scandi-accent)",
+              "scandi-border": "var(--scandi-border)",
+              "scandi-text": "var(--scandi-text-main)",
+              "scandi-muted": "var(--scandi-muted)",
+              "scandi-black": "var(--scandi-primary)",
+            },
+            letterSpacing: {
+              wider: "0.05em",
+              widest: "0.1em",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-scandi-bg text-scandi-text antialiased min-h-screen flex justify-center"
+  >
+    <div
+      class="w-full max-w-md bg-scandi-bg min-h-screen relative flex flex-col pb-28 border-x border-scandi-border"
+    >
+      <header
+        class="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-6 py-6 flex items-center justify-between"
+      >
+        <div class="flex flex-col">
+          <span
+            class="text-[9px] uppercase tracking-[0.2em] text-scandi-muted mb-0.5"
+            >Est. 2024</span
+          >
+          <h1 class="text-lg font-medium tracking-widest uppercase">
+            T.O.I Cà Phê
+          </h1>
+        </div>
+        <button
+          class="size-8 flex items-center justify-center rounded-full text-scandi-black"
+        >
+          <span class="material-symbols-outlined font-light text-[22px]"
+            >search</span
+          >
+        </button>
+      </header>
+      <div
+        class="sticky top-[78px] z-40 bg-white/90 backdrop-blur-md border-y border-scandi-border"
+      >
+        <div class="relative flex items-center">
+          <div
+            class="flex-1 overflow-x-auto no-scrollbar flex items-center gap-6 px-6 h-14 scroll-smooth"
+          >
+            <button
+              class="relative h-full flex items-center whitespace-nowrap group"
+            >
+              <span
+                class="text-[12px] font-medium uppercase tracking-widest text-scandi-black"
+                >Cà phê</span
+              >
+              <span
+                class="absolute bottom-0 left-0 w-full h-[1.5px] bg-scandi-black"
+              ></span>
+            </button>
+            <button
+              class="relative h-full flex items-center whitespace-nowrap group"
+            >
+              <span
+                class="text-[12px] font-medium uppercase tracking-widest text-scandi-muted hover:text-scandi-black transition-colors"
+                >Trà sữa</span
+              >
+            </button>
+            <button
+              class="relative h-full flex items-center whitespace-nowrap group"
+            >
+              <span
+                class="text-[12px] font-medium uppercase tracking-widest text-scandi-muted hover:text-scandi-black transition-colors"
+                >Sinh tố</span
+              >
+            </button>
+            <button
+              class="relative h-full flex items-center whitespace-nowrap group"
+            >
+              <span
+                class="text-[12px] font-medium uppercase tracking-widest text-scandi-muted hover:text-scandi-black transition-colors"
+                >Bánh ngọt</span
+              >
+            </button>
+            <button
+              class="relative h-full flex items-center whitespace-nowrap group"
+            >
+              <span
+                class="text-[12px] font-medium uppercase tracking-widest text-scandi-muted hover:text-scandi-black transition-colors"
+                >Trà hoa quả</span
+              >
+            </button>
+            <button
+              class="relative h-full flex items-center whitespace-nowrap group"
+            >
+              <span
+                class="text-[12px] font-medium uppercase tracking-widest text-scandi-muted hover:text-scandi-black transition-colors"
+                >Đá xay</span
+              >
+            </button>
+            <div class="min-w-[40px]"></div>
+          </div>
+          <div class="absolute right-0 top-0 bottom-0 flex items-center">
+            <div class="w-12 h-full category-fade-right pointer-events-none">
+            </div>
+            <div class="bg-white pl-1 pr-4 h-full flex items-center">
+              <button
+                class="size-9 flex items-center justify-center rounded-full bg-scandi-accent border border-scandi-border text-scandi-black"
+              >
+                <span class="material-symbols-outlined text-[18px] font-light"
+                  >tune</span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <main class="flex-1 p-6 space-y-12">
+        <section>
+          <div
+            class="relative w-full rounded-sm overflow-hidden border border-scandi-border group"
+          >
+            <img
+              alt="Signature salted coffee"
+              class="w-full aspect-[16/10] object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi7FTd6AhNP1oCxW6-cQVyNFtL8R7k2rDwHt6RWzENARMlNECb31ZSv_-dnffS1-3Eya4tdB68tR_78PI6GSCya5Hsppr-8vRbUDyabyL200z6PPLyyQlbbdzunV5224qAJnH05dAzbzyra6rHEYZCdYdY9jQRc9vAEOu1MBcqi_01ctcJf0eLZ0m4ZMqIFbYCQtwrFaLjSmNE_6Qy7DkjqJ7f856rd1Jhk_iCSkhLB5sgInygqQYHo3DM3J6da8dwQ1nCy3JKmA"
+            />
+            <div class="p-6 bg-white">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <span
+                    class="text-[9px] uppercase tracking-[0.2em] text-scandi-muted block mb-1.5"
+                    >Chef's Signature</span
+                  >
+                  <h2 class="text-xl font-medium tracking-tight">
+                    Cà Phê Muối
+                  </h2>
+                </div>
+                <span class="text-base font-light">45.000đ</span>
+              </div>
+              <p
+                class="text-scandi-muted text-sm leading-relaxed mb-6 font-light"
+              >
+                Vị mặn mòi của biển cả kết hợp với vị đắng cà phê, tạo nên hương
+                vị khó quên cho buổi sáng tinh khôi.
+              </p>
+              <button
+                class="w-full py-3 border border-scandi-black text-scandi-black text-[11px] font-medium uppercase tracking-[0.2em] hover:bg-scandi-black hover:text-white transition-all duration-300"
+              >
+                Add to order
+              </button>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="flex items-center justify-between mb-10">
+            <h3
+              class="text-xs font-semibold uppercase tracking-[0.2em] border-b border-scandi-black/10 pb-1.5"
+            >
+              Traditional Coffee
+            </h3>
+            <span class="text-[10px] text-scandi-muted tracking-widest"
+              >03 ITEMS</span
+            >
+          </div>
+          <div class="space-y-12">
+            <div class="flex gap-6 items-start">
+              <div class="relative shrink-0">
+                <img
+                  alt="Black coffee"
+                  class="size-24 rounded-sm object-cover grayscale-[0.1]"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrXpwQvLoau_9gNyWFVjzKtEZq0plgwVJWfHP1DrgdpGBbZbf6JqyfvltejmHWcucvZbnSyWt4h6L1iVNJ7QDkhr-DonwS5XN_pL2rXJLW4zZX6MluSlyCclXdS8mBgWZUiTjrWek86qjQvd5_vZPmOQ4okQHBe9UJXEgHHI3Grl2sl0NKw-oqaP-tuprpmohFK8h4gtz8qghjDkCo0libR2AlD4ToyTuyUK5Jov0CiMBfC3WH2jsF2CeML4_4pgUEIP8XsADuEg"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start mb-1.5">
+                  <h4
+                    class="font-medium text-[15px] tracking-wide truncate pr-2"
+                  >
+                    Cà Phê Đen
+                  </h4>
+                  <span class="text-[14px] font-light">29k</span>
+                </div>
+                <p
+                  class="text-scandi-muted text-xs leading-relaxed line-clamp-2 mb-4 font-light"
+                >
+                  Đậm đà hương vị Robusta rang xay nguyên chất từ vùng cao
+                  nguyên.
+                </p>
+                <button
+                  class="text-[10px] uppercase tracking-[0.15em] font-semibold text-scandi-black flex items-center gap-1.5 group"
+                >
+                  <span
+                    class="border-b border-scandi-black/20 group-hover:border-scandi-black transition-all"
+                    >Quick Add</span
+                  >
+                  <span class="material-symbols-outlined text-[16px] font-light"
+                    >add</span
+                  >
+                </button>
+              </div>
+            </div>
+            <div class="flex gap-6 items-start">
+              <div class="relative shrink-0">
+                <img
+                  alt="Milk coffee"
+                  class="size-24 rounded-sm object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS5N8iMQkoSpEs-mxh_x0HMSFM6I2HVzE33BPUJ7TaSh0NzXBAInSsqBtDC7OnPKinxKkJQ0Z5ied-YYu9tGkC07o0UeUgA_DqQ_qTqFVeebTPv7HpcSm_EZShkh-qQ4HzcZ0CNkquHYNmv0b7xVTTkH7rUUfFexB1DUXf44qCMYm0Tc-KhIWZ3Ttm0Y1Y9YNvPxwbQob_c64CnzLfkZ-deKcqnlKLcvXFRtNbJ8PBJjnfzX-9lMYVSPkAhQD_yhWLqOc8D89Ymg"
+                />
+                <span
+                  class="absolute -top-2 -left-2 bg-scandi-black text-white text-[8px] px-2 py-1 tracking-widest uppercase font-medium"
+                  >Popular</span
+                >
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start mb-1.5">
+                  <h4
+                    class="font-medium text-[15px] tracking-wide truncate pr-2"
+                  >
+                    Cà Phê Sữa
+                  </h4>
+                  <span class="text-[14px] font-light">35k</span>
+                </div>
+                <p
+                  class="text-scandi-muted text-xs leading-relaxed line-clamp-2 mb-4 font-light"
+                >
+                  Sự hòa quyện tuyệt vời giữa cà phê đắng và sữa đặc ngọt ngào
+                  truyền thống.
+                </p>
+                <button
+                  class="text-[10px] uppercase tracking-[0.15em] font-semibold text-scandi-black flex items-center gap-1.5 group"
+                >
+                  <span
+                    class="border-b border-scandi-black/20 group-hover:border-scandi-black transition-all"
+                    >Quick Add</span
+                  >
+                  <span class="material-symbols-outlined text-[16px] font-light"
+                    >add</span
+                  >
+                </button>
+              </div>
+            </div>
+            <div class="flex gap-6 items-start opacity-50">
+              <div class="relative shrink-0">
+                <img
+                  alt="Coconut coffee"
+                  class="size-24 rounded-sm object-cover grayscale"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgNC4OUcDfwWB6zU5_tL_qQ9wD8PZg0FRlgqdPuXgjqwPu2Xwe48VdAl96k14hTWdFaqh86IhvkA1nokhiStrI8J2UUu8djVNGs8-kVf3Lp2JzJjQ_yzWxG7OL9X7SlXwBQY4tQHPmEQmOkk4lvBcSTyrIegzZZ33ZQVGlBsqh93E27_cILJe5p-mSsIB2h1U_7RqQaRNlU4lr8GlYl4oQPQQqHPP9kEHyu8zs8Wjalz3iJmbIIraMK3QksaBeDbLt6jATFsxCkQ"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start mb-1.5">
+                  <h4
+                    class="font-medium text-[15px] tracking-wide truncate pr-2"
+                  >
+                    Cà Phê Cốt Dừa
+                  </h4>
+                  <span class="text-[14px] line-through font-light">45k</span>
+                </div>
+                <p
+                  class="text-scandi-muted text-xs leading-relaxed mb-4 font-light"
+                >
+                  Thơm béo cốt dừa, mát lạnh đá xay.
+                </p>
+                <span
+                  class="text-[9px] uppercase tracking-[0.2em] font-bold text-scandi-muted border border-scandi-border px-2 py-1"
+                  >Out of Stock</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <nav
+        class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-scandi-border max-w-md mx-auto"
+      >
+        <div class="grid grid-cols-3 h-20 items-center px-4">
+          <a
+            class="flex flex-col items-center justify-center gap-1.5 text-scandi-black"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined text-[24px] font-light fill-1"
+              >restaurant_menu</span
+            >
+            <span class="text-[9px] uppercase tracking-[0.15em] font-semibold"
+              >Menu</span
+            >
+          </a>
+          <a
+            class="flex flex-col items-center justify-center gap-1.5 text-scandi-muted hover:text-scandi-black transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[24px] font-light"
+              >confirmation_number</span
+            >
+            <span class="text-[9px] uppercase tracking-[0.15em] font-semibold"
+              >Offers</span
+            >
+          </a>
+          <a
+            class="flex flex-col items-center justify-center gap-1.5 text-scandi-muted hover:text-scandi-black transition-colors relative"
+            href="#"
+          >
+            <div class="relative">
+              <span class="material-symbols-outlined text-[24px] font-light"
+                >shopping_bag</span
+              >
+              <span
+                class="absolute -top-1.5 -right-2.5 bg-scandi-black text-white text-[8px] size-4 rounded-full flex items-center justify-center font-bold"
+                >2</span
+              >
+            </div>
+            <span class="text-[9px] uppercase tracking-[0.15em] font-semibold"
+              >Cart</span
+            >
+          </a>
+        </div>
+        <div class="h-4 bg-white w-full"></div>
+      </nav>
+    </div>
+  </body>
+</html>
