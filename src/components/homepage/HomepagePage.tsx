@@ -193,7 +193,7 @@ export default function HomepagePage({ baseUrl, categories }: Readonly<HomepageP
 
   return (
     <div className="bg-scandi-bg text-scandi-text antialiased min-h-screen flex justify-center">
-      <div className="w-full max-w-md bg-scandi-bg min-h-screen relative flex flex-col pb-28 border-x border-scandi-border">
+      <div className="w-full max-w-md bg-scandi-bg min-h-screen relative flex flex-col border-x border-scandi-border">
         <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-6 py-6 flex items-center justify-between">
           <div className="flex flex-col">
             <span className="text-[9px] uppercase tracking-[0.2em] text-scandi-muted mb-0.5">Est. 2024</span>
@@ -323,19 +323,12 @@ export default function HomepagePage({ baseUrl, categories }: Readonly<HomepageP
           ) : null}
         </main>
 
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-scandi-border max-w-md mx-auto">
-          <div className="grid grid-cols-2 h-20 items-center px-4">
-            <a className="flex flex-col items-center justify-center gap-1.5 text-scandi-black" href="#">
-              <span className="material-symbols-outlined text-[24px] font-light fill-1">restaurant_menu</span>
-              <span className="text-[9px] uppercase tracking-[0.15em] font-semibold">Menu</span>
-            </a>
-            <a className="flex flex-col items-center justify-center gap-1.5 text-scandi-muted hover:text-scandi-black transition-colors" href="#">
-              <span className="material-symbols-outlined text-[24px] font-light">confirmation_number</span>
-              <span className="text-[9px] uppercase tracking-[0.15em] font-semibold">Offers</span>
-            </a>
-          </div>
-          <div className="h-4 bg-white w-full"></div>
-        </nav>
+        <footer className="px-6 pb-2 pt-2 text-center border-t border-scandi-border">
+          <p className="text-[11px] tracking-wide text-scandi-muted">
+            Made by <span className="text-scandi-black font-medium">Evolis Work</span>
+          </p>
+        </footer>
+
       </div>
     </div>
   );
