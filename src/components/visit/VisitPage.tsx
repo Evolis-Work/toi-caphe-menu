@@ -58,7 +58,7 @@ export default function VisitPage({ baseUrl }: Readonly<VisitPageProps>) {
           </div>
           <div className="space-y-1">
             <h3 className="font-bebas tracking-widest text-xs text-luxury-muted">Liên hệ</h3>
-            <a href="tel:0848882852" className="font-cormorant italic text-[17px] text-luxury-text hover:text-luxury-accent transition-colors">0848 882 852</a>
+            <a href="tel:+84848882852" className="font-cormorant italic text-[17px] text-luxury-text hover:text-luxury-accent transition-colors">0848 882 852</a>
           </div>
         </div>
       </section>

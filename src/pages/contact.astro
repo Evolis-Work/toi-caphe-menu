@@ -9,7 +9,7 @@ const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
 const canonicalUrl = new URL(withBase("contact"), siteUrl).toString();
 const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
 const mapUrl = "https://maps.app.goo.gl/aKEMj32fUoLTsR9s8";
-const businessTelephone = import.meta.env.PUBLIC_BUSINESS_TELEPHONE ?? import.meta.env.BUSINESS_TELEPHONE ?? "0848882852";
+const businessTelephone = import.meta.env.PUBLIC_BUSINESS_TELEPHONE ?? import.meta.env.BUSINESS_TELEPHONE ?? "+84848882852";
 const businessPostalCode = import.meta.env.PUBLIC_BUSINESS_POSTAL_CODE ?? import.meta.env.BUSINESS_POSTAL_CODE ?? "97600";
 const businessPriceRange = import.meta.env.PUBLIC_BUSINESS_PRICE_RANGE ?? "$";
 
@@ -59,7 +59,7 @@ const structuredData = {
     </div>
     <div class="flex items-start gap-3">
       <span class="material-symbols-outlined text-luxury-accent">call</span>
-      <a href="tel:0848882852" class="text-sm text-luxury-muted/90 hover:text-luxury-accent transition-colors">0848 882 852</a>
+      <a href="tel:+84848882852" class="text-sm text-luxury-muted/90 hover:text-luxury-accent transition-colors">0848 882 852</a>
     </div>
   </section>
 
