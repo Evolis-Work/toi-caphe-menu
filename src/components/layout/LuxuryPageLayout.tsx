@@ -167,7 +167,7 @@ export default function LuxuryPageLayout({
               <span className="material-symbols-outlined text-lg">map</span>
             </a>
             <a
-              href="tel:#"
+              href="tel:0848882852"
               className="size-10 rounded-full border border-luxury-border/20 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-all"
             >
               <span className="material-symbols-outlined text-lg">call</span>

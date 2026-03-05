@@ -9,6 +9,9 @@ const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
 const canonicalUrl = new URL(withBase("contact"), siteUrl).toString();
 const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
 const mapUrl = "https://maps.app.goo.gl/aKEMj32fUoLTsR9s8";
+const businessTelephone = import.meta.env.PUBLIC_BUSINESS_TELEPHONE ?? import.meta.env.BUSINESS_TELEPHONE ?? "0848882852";
+const businessPostalCode = import.meta.env.PUBLIC_BUSINESS_POSTAL_CODE ?? import.meta.env.BUSINESS_POSTAL_CODE ?? "97600";
+const businessPriceRange = import.meta.env.PUBLIC_BUSINESS_PRICE_RANGE ?? "$";
 
 const title = "Liên Hệ T.Ô.I COFFEE & TEA | Gành Hào, Bạc Liêu";
 const description = "Thông tin liên hệ, địa chỉ và giờ mở cửa của T.Ô.I COFFEE & TEA tại Gành Hào, Đông Hải, Bạc Liêu.";
@@ -25,8 +28,11 @@ const structuredData = {
     "@type": "PostalAddress",
     streetAddress: "2CJC+V6R, Ấp 4, Đông Hải",
     addressLocality: "Bạc Liêu",
+    ...(businessPostalCode ? { postalCode: businessPostalCode } : {}),
     addressCountry: "VN",
   },
+  priceRange: businessPriceRange,
+  ...(businessTelephone ? { telephone: businessTelephone } : {}),
   inLanguage: "vi",
 };
 ---
@@ -53,7 +59,7 @@ const structuredData = {
     </div>
     <div class="flex items-start gap-3">
       <span class="material-symbols-outlined text-luxury-accent">call</span>
-      <p class="text-sm text-luxury-muted/90">Đang cập nhật số điện thoại</p>
+      <a href="tel:0848882852" class="text-sm text-luxury-muted/90 hover:text-luxury-accent transition-colors">0848 882 852</a>
     </div>
   </section>
 

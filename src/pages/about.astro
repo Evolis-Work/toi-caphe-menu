@@ -9,6 +9,9 @@ const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
 const canonicalUrl = new URL(withBase("about"), siteUrl).toString();
 const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
 const mapUrl = "https://maps.app.goo.gl/aKEMj32fUoLTsR9s8";
+const businessTelephone = import.meta.env.PUBLIC_BUSINESS_TELEPHONE ?? import.meta.env.BUSINESS_TELEPHONE ?? "0848882852";
+const businessPostalCode = import.meta.env.PUBLIC_BUSINESS_POSTAL_CODE ?? import.meta.env.BUSINESS_POSTAL_CODE ?? "97600";
+const businessPriceRange = import.meta.env.PUBLIC_BUSINESS_PRICE_RANGE ?? "$";
 
 const title = "Giới Thiệu T.Ô.I COFFEE & TEA | Quán Cà Phê Gành Hào";
 const description = "Tìm hiểu câu chuyện thương hiệu T.Ô.I COFFEE & TEA tại Gành Hào, Đông Hải, Bạc Liêu và triết lý phục vụ của quán.";
@@ -25,8 +28,11 @@ const structuredData = {
     "@type": "PostalAddress",
     streetAddress: "2CJC+V6R, Ấp 4, Đông Hải",
     addressLocality: "Bạc Liêu",
+    ...(businessPostalCode ? { postalCode: businessPostalCode } : {}),
     addressCountry: "VN",
   },
+  priceRange: businessPriceRange,
+  ...(businessTelephone ? { telephone: businessTelephone } : {}),
   inLanguage: "vi",
 };
 ---
@@ -56,4 +62,9 @@ const structuredData = {
       <li>- Dịch vụ lịch sự, nhanh và rõ ràng.</li>
     </ul>
   </section>
+  <section class="space-y-4 border border-luxury-border/30 p-5 rounded-sm bg-luxury-surface/30">
+    <h2 class="font-bebas text-xl tracking-[0.2em] text-luxury-accent uppercase">Hotline</h2>
+    <a href="tel:0848882852" class="text-lg text-luxury-text hover:text-luxury-accent transition-colors">0848 882 852</a>
+  </section>
+
 </LuxuryStaticLayout>

@@ -13,6 +13,9 @@ const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
 const canonicalUrl = new URL(withBase(""), siteUrl).toString();
 const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
 const mapUrl = "https://maps.app.goo.gl/aKEMj32fUoLTsR9s8";
+const businessTelephone = import.meta.env.PUBLIC_BUSINESS_TELEPHONE ?? import.meta.env.BUSINESS_TELEPHONE ?? "0848882852";
+const businessPostalCode = import.meta.env.PUBLIC_BUSINESS_POSTAL_CODE ?? import.meta.env.BUSINESS_POSTAL_CODE ?? "97600";
+const businessPriceRange = import.meta.env.PUBLIC_BUSINESS_PRICE_RANGE ?? "$";
 const keywords = [
   "T.Ô.I Coffee",
   "T.O.I Coffee",
@@ -41,9 +44,12 @@ const structuredData = {
     "@type": "PostalAddress",
     streetAddress: "2CJC+V6R, Ấp 4, Đông Hải",
     addressLocality: "Bạc Liêu",
+    ...(businessPostalCode ? { postalCode: businessPostalCode } : {}),
     addressCountry: "VN",
   },
   servesCuisine: "Coffee, Tea",
+  priceRange: businessPriceRange,
+  ...(businessTelephone ? { telephone: businessTelephone } : {}),
   inLanguage: "vi",
 };
 
