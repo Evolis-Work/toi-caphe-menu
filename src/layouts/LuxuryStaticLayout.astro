@@ -81,8 +81,8 @@ function footerClass(active: boolean): string {
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" media="print" onload="this.media='all'" rel="stylesheet" />
   </head>
 
   <body class="min-h-screen bg-[#0A0A0A] text-luxury-text font-sans antialiased overflow-x-hidden">
@@ -98,9 +98,9 @@ function footerClass(active: boolean): string {
         </div>
       </header>
 
-      <button id="site-menu-overlay" class="fixed inset-0 bg-black/60 z-[70] opacity-0 pointer-events-none transition-opacity duration-300" type="button" aria-label="Đóng menu điều hướng"></button>
+      <button id="site-menu-overlay" hidden class="fixed inset-0 bg-black/60 z-[70]" type="button" aria-label="Đóng menu điều hướng"></button>
 
-      <aside id="site-menu-sheet" class="fixed left-1/2 -translate-x-1/2 top-4 w-[min(26rem,calc(100%-1.5rem))] z-[80] bg-luxury-surface border border-luxury-border/40 rounded-sm p-5 opacity-0 -translate-y-2 pointer-events-none transition-all duration-300" aria-hidden="true">
+      <aside id="site-menu-sheet" hidden class="fixed left-1/2 -translate-x-1/2 top-4 w-[min(26rem,calc(100%-1.5rem))] z-[80] bg-luxury-surface border border-luxury-border/40 rounded-sm p-5" aria-hidden="true">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-bebas text-xl tracking-[0.16em] text-white uppercase">Điều hướng</h2>
           <button id="close-site-menu" type="button" class="size-8 rounded-full border border-luxury-border/40 text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-colors flex items-center justify-center" aria-label="Đóng">
@@ -158,7 +158,7 @@ function footerClass(active: boolean): string {
             );
           })}
         </nav>
-        <p class="font-sans text-[10px] text-luxury-muted/30 uppercase tracking-[0.2em]">© 2026 EVOLIS WORK • PREMIUM EDITION</p>
+        <p class="font-sans text-[10px] text-luxury-muted/80 uppercase tracking-[0.2em]">© 2026 EVOLIS WORK • PREMIUM EDITION</p>
       </footer>
     </div>
 
@@ -175,18 +175,14 @@ function footerClass(active: boolean): string {
         }
 
         const openMenu = () => {
-          overlay.classList.remove("opacity-0", "pointer-events-none");
-          overlay.classList.add("opacity-100", "pointer-events-auto");
-          sheet.classList.remove("opacity-0", "-translate-y-2", "pointer-events-none");
-          sheet.classList.add("opacity-100", "translate-y-0", "pointer-events-auto");
+          overlay.hidden = false;
+          sheet.hidden = false;
           sheet.setAttribute("aria-hidden", "false");
         };
 
         const closeMenu = () => {
-          overlay.classList.remove("opacity-100", "pointer-events-auto");
-          overlay.classList.add("opacity-0", "pointer-events-none");
-          sheet.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto");
-          sheet.classList.add("opacity-0", "-translate-y-2", "pointer-events-none");
+          overlay.hidden = true;
+          sheet.hidden = true;
           sheet.setAttribute("aria-hidden", "true");
         };
 

@@ -98,21 +98,18 @@ export default function LuxuryPageLayout({
           </div>
         </header>
 
-        <button
-          type="button"
-          aria-label="Đóng menu điều hướng"
-          onClick={() => setIsMenuOpen(false)}
-          className={`fixed inset-0 bg-black/60 z-[70] transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-        ></button>
+        {isMenuOpen ? (
+          <>
+            <button
+              type="button"
+              aria-label="Đóng menu điều hướng"
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 z-[70]"
+            ></button>
 
-        <aside
-          className={`fixed left-1/2 -translate-x-1/2 top-4 w-[min(26rem,calc(100%-1.5rem))] z-[80] bg-luxury-surface border border-luxury-border/40 rounded-sm p-5 transition-all duration-300 ${
-            isMenuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
-          }`}
-          aria-hidden={!isMenuOpen}
-        >
+            <aside
+              className="fixed left-1/2 -translate-x-1/2 top-4 w-[min(26rem,calc(100%-1.5rem))] z-[80] bg-luxury-surface border border-luxury-border/40 rounded-sm p-5"
+            >
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bebas text-xl tracking-[0.16em] text-white uppercase">Điều hướng</h2>
             <button
@@ -141,7 +138,9 @@ export default function LuxuryPageLayout({
               );
             })}
           </nav>
-        </aside>
+            </aside>
+          </>
+        ) : null}
 
         {categoryNav}
 
@@ -192,7 +191,7 @@ export default function LuxuryPageLayout({
               })}
             </nav>
           )}
-          <p className="font-sans text-[10px] text-luxury-muted/30 uppercase tracking-[0.2em]">
+          <p className="font-sans text-[10px] text-luxury-muted/80 uppercase tracking-[0.2em]">
             © 2026 EVOLIS WORK • PREMIUM EDITION
           </p>
         </footer>

@@ -132,6 +132,7 @@ export default function LuxuryHomePage({ baseUrl, categories }: Readonly<LuxuryH
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const fallbackSrc = getFallbackSrc(baseUrl);
+  const heroImageUrl = `${baseUrl.replace(/\/?$/, "/")}placeholder.svg`;
   const normalizedQuery = normalizeText(searchQuery.trim());
 
   const checkScroll = (): void => {
@@ -279,7 +280,7 @@ export default function LuxuryHomePage({ baseUrl, categories }: Readonly<LuxuryH
       {!searchQuery && (
         <section className="relative w-[calc(100%+4rem)] -mx-8 aspect-square flex flex-col justify-end overflow-hidden">
           <div className="absolute inset-0 bg-black">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200')] bg-cover bg-center opacity-30"></div>
+            <div className="absolute inset-0 bg-cover bg-center opacity-35" style={{ backgroundImage: `url(${heroImageUrl})` }}></div>
             <div className="absolute inset-0 bg-gradient-to-t from-luxury-bg via-transparent to-transparent"></div>
           </div>
 
@@ -329,7 +330,7 @@ export default function LuxuryHomePage({ baseUrl, categories }: Readonly<LuxuryH
       <div className="relative group">
         <input
           id="search-input"
-          className="w-full bg-transparent border-b border-luxury-border/30 text-luxury-text text-sm font-sans placeholder:text-luxury-muted/40 py-3 pr-8 focus:outline-none focus:border-luxury-accent transition-all duration-500"
+          className="w-full bg-transparent border-b border-luxury-border/30 text-luxury-text text-sm font-sans placeholder:text-luxury-muted/70 py-3 pr-8 focus:outline-none focus:border-luxury-accent transition-all duration-500"
           placeholder="Tìm kiếm món uống theo yêu cầu..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
