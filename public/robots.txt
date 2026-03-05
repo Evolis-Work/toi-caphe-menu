@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /toi-caphe-menu/admin
+Disallow: /toi-caphe-menu/admin/
+
+Sitemap: https://evolis-work.github.io/toi-caphe-menu/sitemap.xml

@@ -1,0 +1,40 @@
+---
+import LuxuryStaticLayout from "../layouts/LuxuryStaticLayout.astro";
+
+const baseUrl = import.meta.env.BASE_URL;
+const withBase = (path: string): string => `${baseUrl.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
+const ogImageUrl = withBase("og-menu.svg");
+
+const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
+const canonicalUrl = new URL(withBase("sitemap"), siteUrl).toString();
+const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
+
+const links = [
+  { href: withBase(""), label: "Trang chủ / Menu" },
+  { href: withBase("visit"), label: "Visit" },
+  { href: withBase("contact"), label: "Contact" },
+  { href: withBase("about"), label: "About" },
+  { href: withBase("admin"), label: "Admin" },
+];
+
+const title = "Sitemap | T.Ô.I COFFEE & TEA";
+const description = "Sơ đồ website T.Ô.I COFFEE & TEA với các trang menu, visit, contact và about.";
+---
+
+<LuxuryStaticLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  ogImageAbsoluteUrl={ogImageAbsoluteUrl}
+>
+  <h1 class="font-bebas text-4xl tracking-[0.1em] text-white uppercase">Sitemap</h1>
+  <ul class="space-y-3">
+    {links.map((item) => (
+      <li>
+        <a href={item.href} class="block border border-luxury-border/30 px-4 py-3 text-sm text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-colors">
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</LuxuryStaticLayout>

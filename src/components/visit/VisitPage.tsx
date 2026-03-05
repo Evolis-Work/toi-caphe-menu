@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import LuxuryPageLayout from "../Layout/LuxuryPageLayout";
+import LuxuryPageLayout from "../layout/LuxuryPageLayout";
 
 interface VisitPageProps {
   baseUrl: string;

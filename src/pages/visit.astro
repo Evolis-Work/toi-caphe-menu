@@ -1,11 +1,33 @@
 ---
-import VisitPage from "../components/Visit/VisitPage";
+import VisitPage from "../components/visit/VisitPage";
 import "../styles/global.css";
 
 const baseUrl = import.meta.env.BASE_URL;
 const withBase = (path: string): string => `${baseUrl.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
 const faviconUrl = withBase("favicon.svg");
 const ogImageUrl = withBase("og-menu.svg");
+
+const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
+const canonicalUrl = new URL(withBase("visit"), siteUrl).toString();
+const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
+const mapUrl = "https://maps.app.goo.gl/aKEMj32fUoLTsR9s8";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  name: "T.Ô.I COFFEE & TEA",
+  url: canonicalUrl,
+  image: ogImageAbsoluteUrl,
+  hasMap: mapUrl,
+  sameAs: [mapUrl],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "2CJC+V6R, Ấp 4, Đông Hải",
+    addressLocality: "Bạc Liêu",
+    addressCountry: "VN",
+  },
+  inLanguage: "vi",
+};
 ---
 
 <!doctype html>
@@ -13,13 +35,35 @@ const ogImageUrl = withBase("og-menu.svg");
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Ghé thăm T.Ô.I COFFEE & TEA</title>
-    <meta name="description" content="Thông tin địa chỉ và bản đồ dẫn đường đến T.Ô.I COFFEE & TEA - Bạc Liêu" />
-    <meta property="og:title" content="Ghé thăm T.Ô.I COFFEE & TEA" />
-    <meta property="og:description" content="Thông tin địa chỉ và bản đồ dẫn đường đến T.Ô.I COFFEE & TEA - Bạc Liêu" />
+
+    <title>Địa Chỉ T.Ô.I COFFEE & TEA | Gành Hào, Bạc Liêu</title>
+    <meta
+      name="description"
+      content="Xem địa chỉ T.Ô.I COFFEE & TEA tại 2CJC+V6R, Ấp 4, Đông Hải, Bạc Liêu và mở Google Maps để chỉ đường nhanh."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href={canonicalUrl} />
+
     <meta property="og:type" content="website" />
-    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:site_name" content="T.Ô.I COFFEE & TEA" />
+    <meta property="og:title" content="Địa Chỉ T.Ô.I COFFEE & TEA | Gành Hào, Bạc Liêu" />
+    <meta
+      property="og:description"
+      content="Thông tin địa chỉ, giờ mở cửa và bản đồ chỉ đường đến T.Ô.I COFFEE & TEA."
+    />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageAbsoluteUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Địa Chỉ T.Ô.I COFFEE & TEA | Gành Hào, Bạc Liêu" />
+    <meta name="twitter:description" content="Mở Google Maps để đến T.Ô.I COFFEE & TEA nhanh nhất." />
+    <meta name="twitter:image" content={ogImageAbsoluteUrl} />
+
+    <meta name="theme-color" content="#0d0d0d" />
     <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

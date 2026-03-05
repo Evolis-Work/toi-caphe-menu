@@ -2,96 +2,182 @@
 import MainLayout from "../layouts/MainLayout.astro";
 
 const sheetEditUrl = import.meta.env.SHEET_EDIT_URL || "https://docs.google.com/spreadsheets";
-const workflowUrl = import.meta.env.WORKFLOW_URL || "https://github.com";
+const workflowUrl = import.meta.env.WORKFLOW_URL || "https://github.com/Evolis-Work/toi-caphe-menu/actions/workflows/deploy.yml";
+
+// Dữ liệu mẫu cho bảng quy định (UI-only)
+const schemaData = [
+  { col: "category", example: "Cà phê", note: "Tên danh mục hiển thị", badge: "Required" },
+  { col: "name", example: "Cà phê sữa đá", note: "Tên món uống", badge: "Required" },
+  { col: "temp", example: "both", note: "hot / cold / both", badge: "Enum" },
+  { col: "price", example: "29000", note: "Chỉ nhập số (VNĐ)", badge: "Number" },
+  { col: "description", example: "Đậm vị cà phê rang xay", note: "Mô tả hương vị", badge: "Optional" },
+  { col: "image", example: "https://...jpg", note: "Link ảnh (Tỉ lệ 1:1)", badge: "URL" },
+  { col: "available", example: "TRUE", note: "Còn hàng (TRUE/FALSE)", badge: "Boolean" },
+  { col: "bestseller", example: "FALSE", note: "Món nổi bật (TRUE/FALSE)", badge: "Boolean" },
+];
 ---
 
 <MainLayout
-  title="Quản Lý Menu | T.Ô.I COFFEE & TEA"
-  description="Trang hướng dẫn cập nhật menu nhanh cho chủ quán"
+  title="Admin Portal | T.Ô.I COFFEE & TEA"
+  description="Hệ thống quản trị thực đơn cao cấp"
   canonicalUrl={Astro.url.href}
+  structuredData={undefined}
 >
-  <header class="hero">
-    <p class="eyebrow">T.Ô.I COFFEE & TEA</p>
-    <h1>Trang Quan Ly Menu</h1>
-    <p>Cap nhat gia, them mon moi va cho build lai website ma khong can dev.</p>
-  </header>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+  </Fragment>
+  <div class="min-h-screen bg-luxury-bg text-luxury-text font-sans antialiased pb-20">
+    <div class="max-w-4xl mx-auto px-6 pt-12 space-y-12">
+      
+      <!-- HEADER SECTION -->
+      <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-luxury-border/30 pb-10">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+             <span class="font-bebas text-luxury-accent tracking-[0.3em] text-sm border border-luxury-accent/30 px-2 py-0.5">ADMIN PORTAL</span>
+          </div>
+          <h1 class="font-bebas text-5xl tracking-tight text-white uppercase">Quản Trị <span class="text-luxury-accent">Thực Đơn</span></h1>
+          <p class="font-cormorant italic text-luxury-muted text-lg">Điều chỉnh hương vị, cập nhật giá trị — Ngay trong tầm tay bạn.</p>
+        </div>
+        
+        <div class="flex items-center gap-4">
+           <div class="text-right hidden md:block">
+              <p class="text-[10px] uppercase tracking-widest text-luxury-muted/50">Trạng thái hệ thống</p>
+              <p class="text-xs font-medium text-emerald-500 flex items-center justify-end gap-1.5">
+                <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Sẵn sàng kết nối
+              </p>
+           </div>
+        </div>
+      </header>
 
-  <section class="admin-panel">
-    <h2>Cap nhat nhanh</h2>
-    <div class="admin-actions">
-      <a class="button" href={sheetEditUrl} target="_blank" rel="noreferrer">Mo Google Sheet</a>
-      <a class="button button-secondary" href={workflowUrl} target="_blank" rel="noreferrer"
-        >Run GitHub Workflow</a
-      >
+      <!-- QUICK STATS (Visual Only) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: "Tổng số món", value: "42", icon: "inventory_2" },
+          { label: "Hết hàng", value: "03", icon: "block", color: "text-orange-400" },
+          { label: "Bestseller", value: "08", icon: "star", color: "text-luxury-accent" },
+          { label: "Ảnh lỗi", value: "00", icon: "image_not_supported" },
+        ].map(stat => (
+          <div class="bg-luxury-surface/40 border border-luxury-border/20 p-5 rounded-sm space-y-3">
+             <span class={`material-symbols-outlined text-xl ${stat.color || 'text-luxury-muted'}`}>{stat.icon}</span>
+             <div>
+                <p class="text-[10px] uppercase tracking-[0.1em] text-luxury-muted/60">{stat.label}</p>
+                <p class="text-2xl font-bebas text-white tracking-wider">{stat.value}</p>
+             </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- ACTION CENTER -->
+      <section class="space-y-6">
+        <div class="flex items-center gap-4">
+           <h2 class="font-bebas text-xl tracking-widest text-white uppercase">Trung Tâm Hành Động</h2>
+           <div class="h-[1px] flex-1 bg-luxury-border/10"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <a href={sheetEditUrl} target="_blank" class="group relative bg-emerald-950/20 border border-emerald-500/20 p-8 rounded-sm hover:border-emerald-500/50 transition-all duration-500 overflow-hidden">
+            <div class="relative z-10 space-y-4">
+              <div class="size-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined">table_chart</span>
+              </div>
+              <div>
+                <h3 class="font-bebas text-2xl text-white tracking-wide uppercase">Mở Google Sheet</h3>
+                <p class="text-sm text-luxury-muted/80 leading-relaxed mt-2">Nơi lưu trữ và chỉnh sửa dữ liệu gốc. Thay đổi tên, giá, ảnh và trạng thái món ăn tại đây.</p>
+              </div>
+            </div>
+            <span class="absolute top-4 right-4 material-symbols-outlined text-emerald-500/30 group-hover:translate-x-1 transition-transform">open_in_new</span>
+          </a>
+
+          <a href={workflowUrl} target="_blank" class="group relative bg-luxury-accent/5 border border-luxury-accent/20 p-8 rounded-sm hover:border-luxury-accent/50 transition-all duration-500 overflow-hidden">
+            <div class="relative z-10 space-y-4">
+              <div class="size-12 bg-luxury-accent/10 rounded-full flex items-center justify-center text-luxury-accent group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined">refresh</span>
+              </div>
+              <div>
+                <h3 class="font-bebas text-2xl text-white tracking-wide uppercase">Kích Hoạt Rebuild</h3>
+                <p class="text-sm text-luxury-muted/80 leading-relaxed mt-2">Cập nhật thay đổi từ Sheet lên website ngay lập tức thông qua GitHub Actions.</p>
+              </div>
+            </div>
+             <span class="absolute top-4 right-4 material-symbols-outlined text-luxury-accent/30 group-hover:rotate-45 transition-transform">rocket_launch</span>
+          </a>
+        </div>
+        <p class="text-center text-xs text-luxury-muted/40 italic">* Lưu ý: Hệ thống tự động đồng bộ mỗi 30 phút nếu bạn không bấm Rebuild thủ công.</p>
+      </section>
+
+      <!-- DATA SCHEMA GUIDE (Horizontal View) -->
+      <section class="space-y-8 bg-luxury-surface/20 border border-luxury-border/10 p-8 md:p-10 rounded-sm overflow-hidden">
+        <div class="space-y-2">
+           <h2 class="font-bebas text-2xl tracking-widest text-white uppercase">Cấu Trúc Google Sheet</h2>
+           <p class="font-cormorant italic text-luxury-muted text-sm">Thứ tự các cột cần nhập chính xác như bảng bên dưới để hệ thống nhận diện đúng.</p>
+        </div>
+
+        <div class="relative">
+          <!-- Scroll Indicator Fade -->
+          <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-luxury-surface/40 to-transparent pointer-events-none z-10 md:hidden"></div>
+          
+          <div class="overflow-x-auto -mx-2 luxury-scrollbar pb-4">
+            <table class="w-full text-left border-collapse min-w-[1000px]">
+              <thead>
+                <tr class="border-b border-luxury-border/30 bg-white/[0.02]">
+                  {schemaData.map((row) => (
+                    <th class="py-4 px-4 font-mono text-[11px] text-luxury-accent uppercase tracking-widest border-r border-luxury-border/10 last:border-0">
+                      {row.col}
+                      <span class="block text-[8px] font-sans text-luxury-muted/40 mt-1 uppercase font-normal">{row.badge}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody class="text-[13px]">
+                <tr class="border-b border-luxury-border/10 group">
+                  {schemaData.map((row) => (
+                    <td class="py-6 px-4 text-luxury-muted border-r border-luxury-border/10 last:border-0 align-top">
+                      <p class="text-white mb-2 font-medium">{row.example}</p>
+                      <p class="text-[11px] text-luxury-muted/60 leading-relaxed italic">{row.note}</p>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-[10px] text-luxury-muted/30 uppercase tracking-[0.2em] pt-4">
+           <span class="material-symbols-outlined text-xs">info</span>
+           Copy chính xác tên cột (viết thường) vào hàng đầu tiên của Google Sheet.
+        </div>
+      </section>
+
+      <!-- WORKFLOW STEPS -->
+      <section class="space-y-10 py-10">
+        <div class="text-center space-y-2">
+           <h2 class="font-bebas text-2xl tracking-[0.3em] text-white uppercase">Quy Trình Cập Nhật</h2>
+           <div class="w-12 h-[1px] bg-luxury-accent mx-auto"></div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-12 relative">
+          {[
+            { step: "01", title: "Sửa Dữ Liệu", desc: "Mở Google Sheet, thực hiện các thay đổi về giá, ảnh hoặc thêm món mới." },
+            { step: "02", title: "Gửi Yêu Cầu", desc: "Bấm 'Kích Hoạt Rebuild' hoặc đợi hệ thống tự quét dữ liệu sau 30 phút." },
+            { step: "03", title: "Hoàn Tất", desc: "Website sẽ tự động cập nhật diện mạo mới. Kiểm tra kết quả tại trang Menu chính." },
+          ].map((item, index) => (
+            <div class="relative space-y-4 group">
+              <span class="font-bebas text-6xl text-luxury-border/30 group-hover:text-luxury-accent/10 transition-colors duration-700 absolute -top-8 -left-2 select-none z-0">{item.step}</span>
+              <div class="relative z-10 space-y-2 pt-2">
+                <h3 class="font-bebas text-xl text-luxury-accent tracking-wide uppercase">{item.title}</h3>
+                <p class="text-sm text-luxury-muted/80 leading-relaxed font-sans">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer class="pt-20 text-center space-y-4 border-t border-luxury-border/10">
+         <p class="font-bebas text-xs tracking-[0.4em] text-luxury-muted/40 uppercase">© 2026 T.Ô.I COFFEE & TEA • MANAGEMENT SYSTEM</p>
+         <a href="/" class="inline-flex items-center gap-2 text-luxury-accent hover:gap-3 transition-all text-xs uppercase tracking-widest">
+           <span class="material-symbols-outlined text-sm">arrow_back</span>
+           Quay lại Menu chính
+         </a>
+      </footer>
     </div>
-    <p class="hint">Sau khi sua Sheet, cho he thong rebuild tu dong hoac bam Run Workflow de cap nhat ngay.</p>
-  </section>
-
-  <section class="admin-panel">
-    <h2>Cot du lieu bat buoc</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Cot</th>
-            <th>Vi du</th>
-            <th>Ghi chu</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>category</td>
-            <td>Ca phe</td>
-            <td>Ten danh muc</td>
-          </tr>
-          <tr>
-            <td>name</td>
-            <td>Ca phe sua da</td>
-            <td>Ten mon</td>
-          </tr>
-          <tr>
-            <td>price</td>
-            <td>29000</td>
-            <td>Chi nhap so</td>
-          </tr>
-          <tr>
-            <td>description</td>
-            <td>Dam vi ca phe va sua dac</td>
-            <td>Co the de trong</td>
-          </tr>
-          <tr>
-            <td>image</td>
-            <td>https://...jpg</td>
-            <td>Link anh public</td>
-          </tr>
-          <tr>
-            <td>available</td>
-            <td>TRUE</td>
-            <td>TRUE hoac FALSE</td>
-          </tr>
-          <tr>
-            <td>bestseller</td>
-            <td>FALSE</td>
-            <td>TRUE hoac FALSE</td>
-          </tr>
-          <tr>
-            <td>temp</td>
-            <td>cold</td>
-            <td>`hot` hoac `cold` hoac `both`</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="admin-panel">
-    <h2>Quy trinh them mon moi</h2>
-    <ol>
-      <li>Mo Google Sheet.</li>
-      <li>Them 1 dong moi va dien du cot.</li>
-      <li>Dat <code>available=TRUE</code> neu con mon.</li>
-      <li>Luu Sheet, cho rebuild (toi da 30 phut) hoac bam Run Workflow.</li>
-      <li>Mo trang menu de kiem tra ket qua.</li>
-    </ol>
-  </section>
+  </div>
 </MainLayout>

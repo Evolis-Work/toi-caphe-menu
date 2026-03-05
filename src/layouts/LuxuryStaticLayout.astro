@@ -1,0 +1,200 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  ogImageAbsoluteUrl: string;
+  structuredData?: Record<string, unknown>;
+}
+
+const { title, description, canonicalUrl, ogImageAbsoluteUrl, structuredData } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+const withBase = (path: string): string => `${baseUrl.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
+const faviconUrl = withBase("favicon.svg");
+
+function normalizePath(path: string): string {
+  const trimmed = path.replace(/\/+$/, "");
+  return trimmed === "" ? "/" : trimmed;
+}
+
+const currentPath = normalizePath(Astro.url.pathname);
+
+const navLinks = [
+  { href: withBase(""), label: "Thực đơn" },
+  { href: withBase("visit"), label: "Ghé quán" },
+  { href: withBase("about"), label: "Giới thiệu" },
+  { href: withBase("contact"), label: "Liên hệ" },
+  { href: withBase("sitemap"), label: "Sơ đồ trang" },
+];
+
+function isActiveLink(href: string, label: string): boolean {
+  const normalizedHref = normalizePath(href);
+  if (label === "Thực đơn") {
+    return currentPath === normalizedHref || currentPath === `${normalizedHref}/index`;
+  }
+  return currentPath === normalizedHref;
+}
+
+function navClass(active: boolean): string {
+  return `border border-luxury-border/30 px-4 py-3 text-xs tracking-[0.2em] uppercase transition-colors ${
+    active ? "text-luxury-accent border-luxury-accent bg-luxury-accent/5" : "text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent"
+  }`;
+}
+
+function footerClass(active: boolean): string {
+  return `text-[10px] tracking-[0.16em] uppercase transition-colors ${
+    active ? "text-luxury-accent" : "text-luxury-muted hover:text-luxury-accent"
+  }`;
+}
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:site_name" content="T.Ô.I COFFEE & TEA" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageAbsoluteUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbsoluteUrl} />
+
+    <meta name="theme-color" content="#0d0d0d" />
+    <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />
+  </head>
+
+  <body class="min-h-screen bg-[#0A0A0A] text-luxury-text font-sans antialiased overflow-x-hidden">
+    <div class="max-w-md mx-auto min-h-screen bg-luxury-bg border-x border-luxury-border/20 flex flex-col">
+      <header class="px-8 py-6 border-b border-luxury-border/10 sticky top-0 bg-luxury-bg/95 backdrop-blur-md z-40">
+        <div class="flex items-center justify-between gap-4">
+          <a href={withBase("/")} class="font-bebas text-xl tracking-[0.1em] text-luxury-text">
+            T.Ô.I <span class="text-luxury-accent font-light">COFFEE &amp; TEA</span>
+          </a>
+          <button id="open-site-menu" class="size-9 rounded-full border border-luxury-border/30 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-colors" type="button" aria-label="Mở menu điều hướng">
+            <span class="material-symbols-outlined text-[20px]">menu</span>
+          </button>
+        </div>
+      </header>
+
+      <button id="site-menu-overlay" class="fixed inset-0 bg-black/60 z-[70] opacity-0 pointer-events-none transition-opacity duration-300" type="button" aria-label="Đóng menu điều hướng"></button>
+
+      <aside id="site-menu-sheet" class="fixed left-1/2 -translate-x-1/2 top-4 w-[min(26rem,calc(100%-1.5rem))] z-[80] bg-luxury-surface border border-luxury-border/40 rounded-sm p-5 opacity-0 -translate-y-2 pointer-events-none transition-all duration-300" aria-hidden="true">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bebas text-xl tracking-[0.16em] text-white uppercase">Điều hướng</h2>
+          <button id="close-site-menu" type="button" class="size-8 rounded-full border border-luxury-border/40 text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-colors flex items-center justify-center" aria-label="Đóng">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <nav class="grid grid-cols-1 gap-2">
+          {navLinks.map((item) => {
+            const active = isActiveLink(item.href, item.label);
+            return (
+              <a href={item.href} class={`site-menu-link ${navClass(active)}`} aria-current={active ? "page" : undefined}>
+                {item.label}
+              </a>
+            );
+          })}
+        </nav>
+      </aside>
+
+      <main class="flex-1 px-8 py-12 space-y-10">
+        <slot />
+      </main>
+
+      <footer class="bg-[#0A0A0A] border-t border-luxury-border/10 py-16 px-10 text-center space-y-6">
+        <div class="space-y-2">
+          <h2 class="font-bebas text-lg tracking-[0.3em] text-white">
+            T.Ô.I <span class="text-luxury-accent">COFFEE &amp; TEA</span>
+          </h2>
+          <p class="text-[11px] text-luxury-muted/60 uppercase tracking-widest flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[14px]">location_on</span>
+            2CJC+V6R, Ấp 4, Đông Hải, Bạc Liêu
+          </p>
+        </div>
+        <p class="font-cormorant italic text-luxury-muted text-sm max-w-[80%] mx-auto leading-relaxed">
+          Chất lượng là nền tảng cho sự thành công của bạn.
+        </p>
+        <div class="flex justify-center gap-8 pt-4">
+          <a href={withBase("visit")} class="size-10 rounded-full border border-luxury-border/20 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-all">
+            <span class="material-symbols-outlined text-lg">map</span>
+          </a>
+          <a href="tel:#" class="size-10 rounded-full border border-luxury-border/20 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-all">
+            <span class="material-symbols-outlined text-lg">call</span>
+          </a>
+          <a href="mailto:#" class="size-10 rounded-full border border-luxury-border/20 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-all">
+            <span class="material-symbols-outlined text-lg">mail</span>
+          </a>
+        </div>
+        <nav class="grid grid-cols-4 gap-2 pt-2 max-w-[320px] mx-auto">
+          {navLinks.slice(1).map((item) => {
+            const active = isActiveLink(item.href, item.label);
+            return (
+              <a href={item.href} class={footerClass(active)} aria-current={active ? "page" : undefined}>
+                {item.label}
+              </a>
+            );
+          })}
+        </nav>
+        <p class="font-sans text-[10px] text-luxury-muted/30 uppercase tracking-[0.2em]">© 2026 EVOLIS WORK • PREMIUM EDITION</p>
+      </footer>
+    </div>
+
+    <script is:inline>
+      (() => {
+        const openBtn = document.getElementById("open-site-menu");
+        const closeBtn = document.getElementById("close-site-menu");
+        const overlay = document.getElementById("site-menu-overlay");
+        const sheet = document.getElementById("site-menu-sheet");
+        const menuLinks = document.querySelectorAll(".site-menu-link");
+
+        if (!openBtn || !closeBtn || !overlay || !sheet) {
+          return;
+        }
+
+        const openMenu = () => {
+          overlay.classList.remove("opacity-0", "pointer-events-none");
+          overlay.classList.add("opacity-100", "pointer-events-auto");
+          sheet.classList.remove("opacity-0", "-translate-y-2", "pointer-events-none");
+          sheet.classList.add("opacity-100", "translate-y-0", "pointer-events-auto");
+          sheet.setAttribute("aria-hidden", "false");
+        };
+
+        const closeMenu = () => {
+          overlay.classList.remove("opacity-100", "pointer-events-auto");
+          overlay.classList.add("opacity-0", "pointer-events-none");
+          sheet.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto");
+          sheet.classList.add("opacity-0", "-translate-y-2", "pointer-events-none");
+          sheet.setAttribute("aria-hidden", "true");
+        };
+
+        openBtn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+        overlay.addEventListener("click", closeMenu);
+        menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
+      })();
+    </script>
+  </body>
+</html>

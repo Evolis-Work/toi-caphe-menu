@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MenuCategory, MenuItem } from "../../types/menu";
-import LuxuryPageLayout from "../Layout/LuxuryPageLayout";
+import LuxuryPageLayout from "../layout/LuxuryPageLayout";
 
 interface LuxuryHomePageProps {
   baseUrl: string;

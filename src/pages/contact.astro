@@ -1,0 +1,64 @@
+---
+import LuxuryStaticLayout from "../layouts/LuxuryStaticLayout.astro";
+
+const baseUrl = import.meta.env.BASE_URL;
+const withBase = (path: string): string => `${baseUrl.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
+const ogImageUrl = withBase("og-menu.svg");
+
+const siteUrl = Astro.site?.toString() ?? "https://evolis-work.github.io";
+const canonicalUrl = new URL(withBase("contact"), siteUrl).toString();
+const ogImageAbsoluteUrl = new URL(ogImageUrl, siteUrl).toString();
+const mapUrl = "https://maps.app.goo.gl/aKEMj32fUoLTsR9s8";
+
+const title = "Liên Hệ T.Ô.I COFFEE & TEA | Gành Hào, Bạc Liêu";
+const description = "Thông tin liên hệ, địa chỉ và giờ mở cửa của T.Ô.I COFFEE & TEA tại Gành Hào, Đông Hải, Bạc Liêu.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  name: "T.Ô.I COFFEE & TEA",
+  url: canonicalUrl,
+  image: ogImageAbsoluteUrl,
+  hasMap: mapUrl,
+  sameAs: [mapUrl],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "2CJC+V6R, Ấp 4, Đông Hải",
+    addressLocality: "Bạc Liêu",
+    addressCountry: "VN",
+  },
+  inLanguage: "vi",
+};
+---
+
+<LuxuryStaticLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  ogImageAbsoluteUrl={ogImageAbsoluteUrl}
+  structuredData={structuredData}
+>
+  <header class="space-y-3 border-b border-luxury-border/20 pb-6">
+    <h1 class="font-bebas text-4xl tracking-[0.08em] text-white uppercase">Liên hệ <span class="text-luxury-accent">T.Ô.I COFFEE & TEA</span></h1>
+  </header>
+
+  <section class="space-y-5">
+    <div class="flex items-start gap-3">
+      <span class="material-symbols-outlined text-luxury-accent">location_on</span>
+      <p class="text-sm text-luxury-muted/90 leading-7">2CJC+V6R, Ấp 4, Đông Hải, Bạc Liêu</p>
+    </div>
+    <div class="flex items-start gap-3">
+      <span class="material-symbols-outlined text-luxury-accent">schedule</span>
+      <p class="text-sm text-luxury-muted/90">06:00 - 22:00 hằng ngày</p>
+    </div>
+    <div class="flex items-start gap-3">
+      <span class="material-symbols-outlined text-luxury-accent">call</span>
+      <p class="text-sm text-luxury-muted/90">Đang cập nhật số điện thoại</p>
+    </div>
+  </section>
+
+  <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 border border-luxury-accent/40 py-3 text-luxury-accent text-xs tracking-[0.2em] uppercase hover:bg-luxury-accent hover:text-black transition-colors">
+    Mở Google Maps
+    <span class="material-symbols-outlined text-sm">open_in_new</span>
+  </a>
+</LuxuryStaticLayout>
