@@ -1,14 +1,11 @@
 ---
-import LuxuryHomePage from "../components/HomePage/LuxuryHomePage";
-import { fetchMenu } from "../lib/fetchMenu";
+import VisitPage from "../components/Visit/VisitPage";
 import "../styles/global.css";
 
 const baseUrl = import.meta.env.BASE_URL;
 const withBase = (path: string): string => `${baseUrl.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
 const faviconUrl = withBase("favicon.svg");
 const ogImageUrl = withBase("og-menu.svg");
-
-const categories = await fetchMenu();
 ---
 
 <!doctype html>
@@ -16,17 +13,18 @@ const categories = await fetchMenu();
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>T.Ô.I COFFEE & TEA - Thực Đơn</title>
-    <meta name="description" content="Thực đơn chính thức của T.Ô.I COFFEE & TEA tại Bạc Liêu." />
-    <meta property="og:title" content="T.Ô.I COFFEE & TEA - Thực Đơn" />
-    <meta property="og:description" content="Khám phá hương vị cà phê và trà tinh tế tại T.Ô.I." />
+    <title>Ghé thăm T.Ô.I COFFEE & TEA</title>
+    <meta name="description" content="Thông tin địa chỉ và bản đồ dẫn đường đến T.Ô.I COFFEE & TEA - Bạc Liêu" />
+    <meta property="og:title" content="Ghé thăm T.Ô.I COFFEE & TEA" />
+    <meta property="og:description" content="Thông tin địa chỉ và bản đồ dẫn đường đến T.Ô.I COFFEE & TEA - Bạc Liêu" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImageUrl} />
     <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link
@@ -35,6 +33,6 @@ const categories = await fetchMenu();
     />
   </head>
   <body class="min-h-screen flex flex-col overflow-x-hidden">
-    <LuxuryHomePage categories={categories} baseUrl={baseUrl} client:load />
+    <VisitPage baseUrl={baseUrl} client:load />
   </body>
 </html>

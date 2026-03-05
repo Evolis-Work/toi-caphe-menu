@@ -1,4 +1,4 @@
-# Toi Ca Phe Menu
+# T.Ô.I COFFEE & TEA Menu
 
 Static digital menu built with Astro. Data is loaded from Google Sheets JSON at build time.
 
