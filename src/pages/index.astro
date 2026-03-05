@@ -50,7 +50,6 @@ const structuredData = {
   servesCuisine: "Coffee, Tea",
   priceRange: businessPriceRange,
   ...(businessTelephone ? { telephone: businessTelephone } : {}),
-  inLanguage: "vi",
 };
 
 const categories = await fetchMenu();
