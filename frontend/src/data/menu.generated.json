@@ -1,0 +1,252 @@
+[
+  {
+    "category": "Cafe",
+    "name": "Cà Phê Đen Đá, Nóng",
+    "price": 15000,
+    "description": "Đen chuẩn gu người lớn: nóng thì ấm mood, đá thì bật tỉnh táo instant.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "hot"
+  },
+  {
+    "category": "Cafe",
+    "name": "Cafe sữa đá",
+    "price": 18000,
+    "description": "Ngọt xinh vừa đủ, mát lạnh phát là thấy đời bớt drama.",
+    "image": "",
+    "available": true,
+    "bestseller": true,
+    "temp": "cold"
+  },
+  {
+    "category": "Cafe",
+    "name": "Cafe sữa nóng",
+    "price": 18000,
+    "description": "Ly cà phê “healing” đầu ngày: ấm tay, thơm sữa, tỉnh nhẹ nhàng.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "hot"
+  },
+  {
+    "category": "Trà",
+    "name": "Trà Chanh",
+    "price": 15000,
+    "description": "Chua thanh mát cổ, cứu khát cực nhanh cho những ngày nắng cháy máy.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà",
+    "name": "Trà Tắc",
+    "price": 15000,
+    "description": "Vị tắc thơm nức mũi, chua ngọt tỉnh người, hợp để “reset não”.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà",
+    "name": "Trà Gừng",
+    "price": 15000,
+    "description": "Ấm bụng ấm lòng, dịu cổ họng, hợp hôm trời trở mood lạnh.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Latte",
+    "name": "Matcha",
+    "price": 25000,
+    "description": "Matcha xanh mướt, thơm dịu, uống vào thấy mình sống healthy ngay tức thì.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Latte",
+    "name": "Cacao",
+    "price": 25000,
+    "description": "Cacao ngọt thơm kiểu dễ thương, một ly là mood lên level.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Latte",
+    "name": "Cà Phê",
+    "price": 25000,
+    "description": "Latte cân bằng đỉnh: cà phê đủ lực, sữa đủ êm, gu ai cũng hợp.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà Nhiệt Đới",
+    "name": "Trà Trái Cây",
+    "price": 25000,
+    "description": "Trái cây tươi mát full năng lượng, mỗi ngụm là một tí vacation.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà Nhiệt Đới",
+    "name": "Trà Ổi",
+    "price": 25000,
+    "description": "Ổi thơm thanh, vị trà nhẹ, uống xong thấy người “fresh” hẳn.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà Sữa",
+    "name": "Nguyên Lá",
+    "price": 20000,
+    "description": "Trà đậm vị thật, sữa béo vừa xinh, uống là ghiền không cần lý do.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà Sữa",
+    "name": "Olong",
+    "price": 20000,
+    "description": "Olong thơm sang, hậu vị sâu, ngọt béo vừa đủ để nhớ mãi.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Kombucha",
+    "name": "Ổi",
+    "price": 20000,
+    "description": "Kombucha ổi chua nhẹ vui miệng, uống vào thấy bụng dạ “thank you”.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Kombucha",
+    "name": "Vải",
+    "price": 20000,
+    "description": "Vải ngọt thanh gặp kombucha nhẹ men, refresh đúng nghĩa.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Kombucha",
+    "name": "Đào",
+    "price": 20000,
+    "description": "Kombucha đào mát chua nhẹ, hợp team thích ngon mà vẫn gọn.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Soda",
+    "name": "Blue",
+    "price": 20000,
+    "description": "Màu xanh bắt mắt, gas nổ tanh tách, uống là thấy vui phết.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Soda",
+    "name": "Dâu",
+    "price": 20000,
+    "description": "Dâu ngọt xinh, soda mát đã, hợp chụp ảnh check-in cực phẩm.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Soda",
+    "name": "Đào",
+    "price": 20000,
+    "description": "Soda đào thơm mát, ngọt dịu, giải nhiệt nhanh không cần nói nhiều.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Yogurt",
+    "name": "Dâu",
+    "price": 25000,
+    "description": "Yaourt dâu chua ngọt cân bằng, mịn mát ngon kiểu không bị ngán.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Yogurt",
+    "name": "Đào",
+    "price": 25000,
+    "description": "Yaourt đào thơm nhẹ, vị êm, hợp mọi khung giờ trong ngày.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Yogurt",
+    "name": "Việt Quất",
+    "price": 25000,
+    "description": "Yaourt việt quất chua dịu, tươi mát, càng uống càng mê.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Nước Giải Khát",
+    "name": "Sting",
+    "price": 15000,
+    "description": "Năng lượng nạp nhanh, hợp lúc deadline dí sát gáy.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Nước Giải Khát",
+    "name": "Redbull",
+    "price": 15000,
+    "description": "Nhỏ mà lực, cứu cánh cho buổi sáng thiếu pin.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Nước Giải Khát",
+    "name": "Cafe 247",
+    "price": 15000,
+    "description": "Cà phê lon quen mặt, tiện gọn lẹ cho ngày chạy task liên tục.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  }
+]

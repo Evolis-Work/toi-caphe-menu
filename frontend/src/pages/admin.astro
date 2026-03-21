@@ -98,7 +98,7 @@ const menuItemSchema = [
               </div>
               <div>
                 <h3 class="font-bebas text-2xl text-white tracking-wide uppercase">Public API URL</h3>
-                <p class="text-sm text-luxury-muted/80 leading-relaxed mt-2">Frontend dùng biến môi trường <code class="text-luxury-accent">PUBLIC_STRAPI_URL</code> để lấy dữ liệu menu.</p>
+                <p class="text-sm text-luxury-muted/80 leading-relaxed mt-2">Frontend không gọi API runtime. Bước build sẽ kéo dữ liệu từ Strapi, sinh ra <code class="text-luxury-accent">menu.generated.json</code> rồi site đọc file đó.</p>
               </div>
             </div>
             <span class="absolute top-4 right-4 material-symbols-outlined text-luxury-accent/30 group-hover:rotate-45 transition-transform">link</span>

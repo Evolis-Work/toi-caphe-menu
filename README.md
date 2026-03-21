@@ -9,9 +9,9 @@ Monorepo cho digital menu của Lộc Cà Phê.
 
 Luồng dữ liệu chính:
 
-`Strapi Cloud -> Frontend Astro -> GitHub Pages`
+`Strapi Cloud -> build sync -> frontend/src/data/menu.generated.json -> GitHub Pages`
 
-Frontend fetch dữ liệu public từ Strapi Cloud, render menu, search, sticky category, scrollspy. Nếu Strapi lỗi, hệ thống vẫn có fallback sample data local để tránh menu trắng.
+Frontend không gọi Strapi API lúc runtime. Khi build, script sync sẽ lấy dữ liệu từ Strapi Cloud, sinh ra `menu.generated.json`, rồi frontend import file đó để render menu, search, sticky category, scrollspy. Nếu Strapi lỗi, hệ thống sẽ fallback sang sample data local để tránh menu trắng.
 
 ## Frontend
 
@@ -75,9 +75,11 @@ Workflow deploy frontend ở `.github/workflows/deploy.yml`.
 Cần đặt repository variable:
 
 - `PUBLIC_STRAPI_URL` = public Strapi Cloud URL
+- `STRAPI_API_TOKEN` = token read-only của Strapi để build sync dữ liệu
 
 ## Notes
 
 - Nguồn dữ liệu chính là Strapi Cloud.
 - Admin trang cũ vẫn có thể dùng để hướng dẫn nội dung, nhưng nguồn dữ liệu chính là Strapi.
 - Frontend build dùng base path `/toi-caphe-menu` để chạy trên GitHub Pages.
+- Dữ liệu runtime của frontend là JSON tĩnh đã sinh từ bước build, không query API trực tiếp.
