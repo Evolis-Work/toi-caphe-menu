@@ -1,6 +1,6 @@
-# T.Ô.I COFFEE & TEA Menu
+# Lộc Cà Phê Menu
 
-Monorepo cho digital menu của T.Ô.I COFFEE & TEA.
+Monorepo cho digital menu của Lộc Cà Phê.
 
 - `frontend/`: Astro + React, deploy lên GitHub Pages.
 - `backend/`: Strapi app để quản lý menu, deploy lên Strapi Cloud Free.

@@ -17,16 +17,11 @@ const businessTelephone = import.meta.env.PUBLIC_BUSINESS_TELEPHONE ?? import.me
 const businessPostalCode = import.meta.env.PUBLIC_BUSINESS_POSTAL_CODE ?? import.meta.env.BUSINESS_POSTAL_CODE ?? "97600";
 const businessPriceRange = import.meta.env.PUBLIC_BUSINESS_PRICE_RANGE ?? "$";
 const keywords = [
-  "T.Ô.I Coffee",
-  "T.O.I Coffee",
-  "T.Ô.I COFFEE & TEA",
+  "Lộc Cà Phê",
+  "Loc Ca Phe",
   "quán cà phê gành hào",
   "cà phê gành hào",
-  "toi coffe",
-  "toi coffee",
-  "toi cà phê",
-  "toi ca phe",
-  "T.O.I coffe",
+  "loc ca phe",
   "quán cà phê bạc liêu",
   "cafe đông hải bạc liêu",
 ].join(", ");
@@ -34,8 +29,8 @@ const keywords = [
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CafeOrCoffeeShop",
-  name: "T.Ô.I COFFEE & TEA",
-  alternateName: ["T.Ô.I Coffee", "T.O.I Coffee", "toi cà phê", "toi ca phe"],
+  name: "Lộc Cà Phê",
+  alternateName: ["Loc Ca Phe", "Lộc Cafe", "loc ca phe"],
   url: canonicalUrl,
   image: ogImageAbsoluteUrl,
   hasMap: mapUrl,
@@ -61,10 +56,10 @@ const categories = await fetchMenu();
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>T.Ô.I COFFEE & TEA | Quán Cà Phê Gành Hào, Bạc Liêu</title>
+    <title>Lộc Cà Phê | Quán Cà Phê Gành Hào, Bạc Liêu</title>
     <meta
       name="description"
-      content="T.Ô.I COFFEE & TEA - quán cà phê tại Gành Hào, Bạc Liêu. Khám phá menu cà phê, trà và tìm đường đến 2CJC+V6R, Ấp 4, Đông Hải."
+      content="Lộc Cà Phê - quán cà phê tại Gành Hào, Bạc Liêu. Khám phá menu cà phê, trà và tìm đường đến 2CJC+V6R, Ấp 4, Đông Hải."
     />
     <meta name="keywords" content={keywords} />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
@@ -72,20 +67,20 @@ const categories = await fetchMenu();
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="vi_VN" />
-    <meta property="og:site_name" content="T.Ô.I COFFEE & TEA" />
-    <meta property="og:title" content="T.Ô.I COFFEE & TEA | Quán Cà Phê Gành Hào, Bạc Liêu" />
+    <meta property="og:site_name" content="Lộc Cà Phê" />
+    <meta property="og:title" content="Lộc Cà Phê | Quán Cà Phê Gành Hào, Bạc Liêu" />
     <meta
       property="og:description"
-      content="Thưởng thức cà phê và trà tại T.Ô.I COFFEE & TEA. Địa chỉ: 2CJC+V6R, Ấp 4, Đông Hải, Bạc Liêu."
+      content="Thưởng thức cà phê và trà tại Lộc Cà Phê. Địa chỉ: 2CJC+V6R, Ấp 4, Đông Hải, Bạc Liêu."
     />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImageAbsoluteUrl} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="T.Ô.I COFFEE & TEA | Quán Cà Phê Gành Hào, Bạc Liêu" />
+    <meta name="twitter:title" content="Lộc Cà Phê | Quán Cà Phê Gành Hào, Bạc Liêu" />
     <meta
       name="twitter:description"
-      content="Menu T.Ô.I COFFEE & TEA - quán cà phê Gành Hào, Bạc Liêu."
+      content="Menu Lộc Cà Phê - quán cà phê Gành Hào, Bạc Liêu."
     />
     <meta name="twitter:image" content={ogImageAbsoluteUrl} />
 

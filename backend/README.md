@@ -1,6 +1,6 @@
 # Backend - Strapi Cloud
 
-Strapi backend cho menu số của T.Ô.I COFFEE & TEA.
+Strapi backend cho menu số của Lộc Cà Phê.
 
 ## Mục tiêu
 

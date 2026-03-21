@@ -79,7 +79,7 @@ export default function VisitPage({ baseUrl }: Readonly<VisitPageProps>) {
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             className="opacity-90 grayscale-[0.2] contrast-110"
-            title="Google map T.O.I COFFEE & TEA"
+            title="Google map Lộc Cà Phê"
           ></iframe>
         </div>
 

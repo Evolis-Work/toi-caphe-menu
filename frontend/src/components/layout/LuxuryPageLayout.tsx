@@ -71,7 +71,7 @@ export default function LuxuryPageLayout({
         >
           <div className="flex flex-col">
             <h1 className="text-xl font-bebas tracking-[0.1em] text-luxury-text">
-              T.Ô.I <span className="text-luxury-accent font-light">COFFEE &amp; TEA</span>
+              Lộc <span className="text-luxury-accent font-light">Cà Phê</span>
             </h1>
           </div>
 
@@ -149,7 +149,7 @@ export default function LuxuryPageLayout({
         <footer className="bg-[#0A0A0A] border-t border-luxury-border/10 py-16 px-10 text-center space-y-6">
           <div className="space-y-2">
             <h2 className="font-bebas text-lg tracking-[0.3em] text-white">
-              T.Ô.I <span className="text-luxury-accent">COFFEE &amp; TEA</span>
+              Lộc <span className="text-luxury-accent">Cà Phê</span>
             </h2>
             <p className="text-[11px] text-luxury-muted/60 uppercase tracking-widest flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-[14px]">location_on</span>

@@ -3,41 +3,38 @@ import type { MenuCategory, MenuItem, MenuTemp } from "../types/menu";
 
 type SheetRow = Record<string, string | number | boolean | undefined>;
 
-interface StrapiCollectionResponse<T> {
-  data: Array<{
-    id: number;
-    attributes: T;
-  }>;
-}
-
-interface StrapiMedia {
-  data?: {
-    attributes?: {
+type StrapiMediaValue =
+  | string
+  | null
+  | {
       url?: string;
+      data?: {
+        attributes?: {
+          url?: string;
+        };
+      } | null;
     };
-  } | null;
+
+interface StrapiCollectionResponse<T> {
+  data: T[];
 }
 
-interface StrapiCategoryAttributes {
+interface StrapiCategoryValue {
   name?: string;
   slug?: string;
-  order?: number;
+  order?: number | string;
 }
 
-interface StrapiMenuItemAttributes {
+interface StrapiMenuItemValue {
   name?: string;
   price?: number | string;
   description?: string;
-  image?: StrapiMedia;
+  image?: StrapiMediaValue;
   available?: boolean | string | number;
   bestseller?: boolean | string | number;
   temp?: string;
-  order?: number;
-  category?: {
-    data?: {
-      attributes?: StrapiCategoryAttributes;
-    } | null;
-  };
+  order?: number | string;
+  category?: StrapiCategoryValue | { data?: { attributes?: StrapiCategoryValue } | null } | null;
 }
 
 interface ParsedStrapiCategory {
@@ -82,6 +79,17 @@ function parsePrice(value: unknown): number {
     return Number.isFinite(parsed) ? parsed : NaN;
   }
   return NaN;
+}
+
+function parseOrder(value: unknown): number {
+  if (typeof value === "number") {
+    return value;
+  }
+  if (typeof value === "string") {
+    const parsed = Number(value.trim());
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
 }
 
 function inferTempFromCategory(category: string): MenuTemp {
@@ -139,6 +147,45 @@ function toAbsoluteUrl(baseUrl: string, maybeRelativeUrl: string): string {
 function extractDescription(value: unknown): string {
   if (typeof value === "string") {
     return value.trim();
+  }
+
+  return "";
+}
+
+function getStrapiRecord<T extends Record<string, unknown>>(entry: T): T {
+  const candidate = entry as T & { attributes?: T };
+  return (candidate.attributes ?? entry) as T;
+}
+
+function getStrapiCategoryName(value: StrapiMenuItemValue["category"]): string {
+  if (!value) {
+    return "";
+  }
+
+  const category = "data" in value ? value.data?.attributes ?? null : value;
+  if (!category) {
+    return "";
+  }
+
+  return String(category.name ?? category.slug ?? "").trim();
+}
+
+function getStrapiMediaUrl(value: StrapiMediaValue): string {
+  if (!value) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
+  if (typeof value.url === "string" && value.url.trim()) {
+    return value.url.trim();
+  }
+
+  const nestedUrl = value.data?.attributes?.url;
+  if (typeof nestedUrl === "string") {
+    return nestedUrl.trim();
   }
 
   return "";
@@ -202,8 +249,21 @@ function normalizeStrapiBaseUrl(input: string): string {
   return input.endsWith("/") ? input : `${input}/`;
 }
 
+function getStrapiHeaders(): HeadersInit | undefined {
+  const apiToken = import.meta.env.STRAPI_API_TOKEN?.trim();
+  if (!apiToken) {
+    return undefined;
+  }
+
+  return {
+    Authorization: `Bearer ${apiToken}`
+  };
+}
+
 async function fetchStrapiCollection<T>(baseUrl: string, path: string): Promise<StrapiCollectionResponse<T> | null> {
-  const response = await fetch(new URL(path, normalizeStrapiBaseUrl(baseUrl)).toString());
+  const response = await fetch(new URL(path, normalizeStrapiBaseUrl(baseUrl)).toString(), {
+    headers: getStrapiHeaders()
+  });
   if (!response.ok) {
     throw new Error(`Strapi request failed: ${response.status}`);
   }
@@ -229,15 +289,16 @@ async function loadStrapiRows(): Promise<MenuCategory[] | null> {
 
     const parsedCategories: ParsedStrapiCategory[] = categoriesPayload.data
       .map((entry) => {
-        const name = String(entry.attributes.name ?? "").trim();
+        const category = getStrapiRecord(entry as StrapiCategoryValue & { attributes?: StrapiCategoryValue });
+        const name = String(category.name ?? "").trim();
         if (!name) {
           return null;
         }
 
         return {
           name,
-          slug: entry.attributes.slug?.trim() || slugify(name),
-          order: Number(entry.attributes.order ?? 0)
+          slug: String(category.slug ?? "").trim() || slugify(name),
+          order: parseOrder(category.order)
         };
       })
       .filter((item): item is ParsedStrapiCategory => item !== null)
@@ -245,29 +306,27 @@ async function loadStrapiRows(): Promise<MenuCategory[] | null> {
 
     const parsedItems: ParsedStrapiItem[] = menuItemsPayload.data
       .map((entry) => {
-        const attributes = entry.attributes;
-        const name = String(attributes.name ?? "").trim();
-        const price = parsePrice(attributes.price);
-        const categoryName =
-          String(attributes.category?.data?.attributes?.name ?? "").trim() ||
-          String(attributes.category?.data?.attributes?.slug ?? "").trim();
+        const item = getStrapiRecord(entry as StrapiMenuItemValue & { attributes?: StrapiMenuItemValue });
+        const name = String(item.name ?? "").trim();
+        const price = parsePrice(item.price);
+        const categoryName = getStrapiCategoryName(item.category);
 
         if (!name || Number.isNaN(price) || !categoryName) {
           return null;
         }
 
-        const imageUrl = attributes.image?.data?.attributes?.url ?? "";
+        const imageUrl = getStrapiMediaUrl(item.image);
 
         return {
           categoryName,
           name,
           price,
-          description: extractDescription(attributes.description),
+          description: extractDescription(item.description),
           image: toAbsoluteUrl(strapiBaseUrl, imageUrl),
-          available: parseBoolean(attributes.available),
-          bestseller: parseBoolean(attributes.bestseller),
-          temp: parseTemp(attributes.temp, categoryName),
-          order: Number(attributes.order ?? 0)
+          available: parseBoolean(item.available),
+          bestseller: parseBoolean(item.bestseller),
+          temp: parseTemp(item.temp, categoryName),
+          order: parseOrder(item.order)
         };
       })
       .filter((item): item is ParsedStrapiItem => item !== null)

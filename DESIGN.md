@@ -1,4 +1,4 @@
-# Design System: T.Ô.I COFFEE & TEA Menu
+# Design System: Lộc Cà Phê Menu
 
 ## 1. Visual Theme & Atmosphere
 Hệ thống thiết kế theo phong cách **Luxury Premium (Sự tinh tế tối giản)**. Cảm hứng được lấy từ các thực đơn cao cấp tại các khách sạn 5 sao và quán cà phê specialty. 
