@@ -74,3 +74,25 @@ STRAPI_SEED_MENU=true npm run develop
 ```
 
 Seed chỉ chạy khi chưa có category nào trong database. Điều này tránh ghi đè dữ liệu thật trên Strapi Cloud.
+
+## Import từ JSON
+
+Để import dữ liệu đã xuất sẵn vào Strapi:
+
+```bash
+npm run import:menu
+```
+
+Hoặc từ root repo:
+
+```bash
+npm run backend:import
+```
+
+Tuỳ chọn ảnh từ URL:
+
+```bash
+STRAPI_IMPORT_IMAGES=true STRAPI_PUBLIC_BASE_URL=https://... npm run import:menu
+```
+
+Script này upsert theo `slug`, nên chạy lại không tạo bản sao trùng lặp.

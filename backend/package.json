@@ -6,6 +6,7 @@
   "scripts": {
     "build": "strapi build",
     "console": "strapi console",
+    "import:menu": "node ./scripts/import-strapi-ready.js",
     "deploy": "strapi deploy",
     "dev": "strapi develop",
     "develop": "strapi develop",
