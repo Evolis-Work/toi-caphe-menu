@@ -367,8 +367,8 @@ function normalizeSheetPayload(payload) {
 function toGeneratedRows(sheetPayload) {
   const rows = normalizeSheetPayload(sheetPayload);
   return rows
-    .map((row, index) => toMenuItem(row, index))
-    .filter((item) => item !== null);
+    .map((row) => toRow(row, String(row.category ?? "")))
+    .filter((item) => item.category && item.name && !Number.isNaN(item.price));
 }
 
 async function main() {
