@@ -54,7 +54,7 @@
     "name": "Trà Gừng",
     "price": 15000,
     "description": "Ấm bụng ấm lòng, dịu cổ họng, hợp hôm trời trở mood lạnh.",
-    "image": "",
+    "image": "https://splendid-activity-7b90452b27.media.strapiapp.com/Whisk_mwm2ity1gtm4ewz00cm0ewotqmyhrtl5gjm40ym_2aa6d8a845.png",
     "available": true,
     "bestseller": false,
     "temp": "cold"
@@ -110,6 +110,16 @@
     "temp": "cold"
   },
   {
+    "category": "Trà Nhiệt Đới",
+    "name": "Trà Vải",
+    "price": 25000,
+    "description": "Vải ngọt dịu + trà mát lành, combo xinh yêu cho ngày dài.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
     "category": "Trà Sữa",
     "name": "Nguyên Lá",
     "price": 20000,
@@ -124,6 +134,16 @@
     "name": "Olong",
     "price": 20000,
     "description": "Olong thơm sang, hậu vị sâu, ngọt béo vừa đủ để nhớ mãi.",
+    "image": "",
+    "available": true,
+    "bestseller": false,
+    "temp": "cold"
+  },
+  {
+    "category": "Trà Sữa",
+    "name": "Hoa Nhài",
+    "price": 20000,
+    "description": "Hương nhài thơm thoang thoảng, dịu dàng nhưng vẫn siêu cuốn.",
     "image": "",
     "available": true,
     "bestseller": false,
@@ -210,16 +230,6 @@
     "temp": "cold"
   },
   {
-    "category": "Yogurt",
-    "name": "Việt Quất",
-    "price": 25000,
-    "description": "Yaourt việt quất chua dịu, tươi mát, càng uống càng mê.",
-    "image": "",
-    "available": true,
-    "bestseller": false,
-    "temp": "cold"
-  },
-  {
     "category": "Nước Giải Khát",
     "name": "Sting",
     "price": 15000,
@@ -234,16 +244,6 @@
     "name": "Redbull",
     "price": 15000,
     "description": "Nhỏ mà lực, cứu cánh cho buổi sáng thiếu pin.",
-    "image": "",
-    "available": true,
-    "bestseller": false,
-    "temp": "cold"
-  },
-  {
-    "category": "Nước Giải Khát",
-    "name": "Cafe 247",
-    "price": 15000,
-    "description": "Cà phê lon quen mặt, tiện gọn lẹ cho ngày chạy task liên tục.",
     "image": "",
     "available": true,
     "bestseller": false,

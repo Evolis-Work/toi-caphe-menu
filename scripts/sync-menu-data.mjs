@@ -173,17 +173,27 @@ function getCategoryName(value) {
 }
 
 function getMediaUrl(value) {
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
   const media = unwrapRecord(value);
   if (!media) {
     return "";
   }
 
-  if (typeof media === "string") {
-    return media.trim();
-  }
-
   if (typeof media.url === "string" && media.url.trim()) {
     return media.url.trim();
+  }
+
+  const formats = media.formats;
+  if (formats && typeof formats === "object") {
+    for (const format of ["large", "medium", "small", "thumbnail"]) {
+      const candidate = formats[format];
+      if (candidate && typeof candidate.url === "string" && candidate.url.trim()) {
+        return candidate.url.trim();
+      }
+    }
   }
 
   return "";
