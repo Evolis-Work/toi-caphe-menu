@@ -21,7 +21,7 @@ function normalizePath(path: string): string {
 export default function LuxuryPageLayout({
   baseUrl,
   isScrolled,
-  onSearchClick,
+  onSearchClick = () => {},
   showSearchButton = true,
   categoryNav,
   footerNav,
@@ -61,6 +61,14 @@ export default function LuxuryPageLayout({
       active ? "text-luxury-accent" : "text-luxury-muted hover:text-luxury-accent"
     }`;
 
+  const handleSearchClick = (): void => {
+    onSearchClick();
+  };
+
+  const handleOpenMenu = (): void => {
+    setIsMenuOpen(true);
+  };
+
   return (
     <div className="bg-[#0A0A0A] text-luxury-text min-h-screen font-sans selection:bg-luxury-accent selection:text-black antialiased">
       <div className="max-w-md mx-auto min-h-screen bg-luxury-bg relative flex flex-col border-x border-luxury-border/20">
@@ -80,7 +88,7 @@ export default function LuxuryPageLayout({
               <button
                 className="size-9 rounded-full border border-luxury-border/30 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-colors"
                 type="button"
-                onClick={onSearchClick}
+                onClick={handleSearchClick}
                 aria-label="Mở tìm kiếm"
               >
                 <span className="material-symbols-outlined font-light text-[20px]">search</span>
@@ -90,7 +98,7 @@ export default function LuxuryPageLayout({
             <button
               className="size-9 rounded-full border border-luxury-border/30 flex items-center justify-center text-luxury-muted hover:text-luxury-accent hover:border-luxury-accent transition-colors"
               type="button"
-              onClick={() => setIsMenuOpen(true)}
+              onClick={handleOpenMenu}
               aria-label="Mở menu điều hướng"
             >
               <span className="material-symbols-outlined font-light text-[20px]">menu</span>

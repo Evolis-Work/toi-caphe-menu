@@ -6,15 +6,15 @@ Digital menu static cho Lộc Cà Phê.
 
 Luồng dữ liệu chính:
 
-`Google Sheet -> Apps Script JSON -> build sync -> src/data/menu.generated.json + public/menu-images/ -> GitHub Pages`
+`Google Sheet (edit trực tiếp) -> CSV export công khai -> build sync -> src/data/menu.generated.json + public/menu-images/ -> GitHub Pages`
 
-Frontend không gọi API runtime. Khi build, script sync sẽ lấy dữ liệu từ `SHEET_JSON_URL`, sinh ra `menu.generated.json`, tải ảnh món về `public/menu-images/`, rồi frontend import file đó để render menu, search, sticky category, scrollspy.
+Frontend không gọi API runtime. Khi build, script sync sẽ lấy dữ liệu từ `SHEET_ITEMS_URL` và `SHEET_CATEGORIES_URL`, sinh ra `menu.generated.json`, tải ảnh món về `public/menu-images/`, rồi frontend import file đó để render menu, search, sticky category, scrollspy.
 
-Nếu Sheet hoặc Apps Script lỗi, hệ thống sẽ giữ snapshot đã tạo gần nhất để site không bị trắng.
+Nếu Sheet lỗi, hệ thống sẽ giữ snapshot đã tạo gần nhất để site không bị trắng.
 
 Trong GitHub Actions, build chạy ở strict mode: nếu sync Sheet lỗi thì workflow fail thay vì publish snapshot cũ.
 
-Trang `/admin` trên GitHub Pages chỉ là launcher. UI CRUD thật nằm trong Apps Script HTML Service và mở bằng cùng web app URL với `?view=admin`.
+Không có backend riêng. Anh chỉnh trực tiếp trong Google Sheet, rồi build/deploy lại để sinh snapshot mới.
 
 ## Chạy local
 
@@ -29,20 +29,21 @@ npm run dev
 
 Copy [.env.example](.env.example) nếu cần local override:
 
-- `SHEET_JSON_URL`
+- `SHEET_CATEGORIES_URL`
+- `SHEET_ITEMS_URL`
 - `SITE_URL`
 - `REPO_NAME`
 - `PUBLIC_BUSINESS_TELEPHONE`
 - `PUBLIC_BUSINESS_POSTAL_CODE`
 - `PUBLIC_BUSINESS_PRICE_RANGE`
 
-## Google Sheet + Apps Script
+## Google Sheet export
 
-Sheet là nơi nhập dữ liệu menu. Apps Script xuất JSON công khai để build sync đọc.
+Sheet là nơi nhập dữ liệu menu. Build sync đọc trực tiếp CSV export công khai của Google Sheet.
 
-Ví dụ Apps Script export có trong [docs/GOOGLE_SHEET_APPS_SCRIPT.md](docs/GOOGLE_SHEET_APPS_SCRIPT.md).
+Hướng dẫn URL export có trong [docs/GOOGLE_SHEET_EXPORT.md](docs/GOOGLE_SHEET_EXPORT.md).
 
-Khuyến nghị JSON trả về là một mảng row phẳng, mỗi row có các cột:
+Khuyến nghị các cột cho tab `MenuItems`:
 
 - `category`
 - `name`
@@ -52,35 +53,36 @@ Khuyến nghị JSON trả về là một mảng row phẳng, mỗi row có các
 - `image`
 - `available`
 - `bestseller`
+- `order`
+
+Khuyến nghị các cột cho tab `Categories`:
+
+- `id`
+- `name`
+- `icon`
+- `order`
 
 Ảnh nên là URL public nếu muốn build tự tải ảnh về `public/menu-images/`.
 
 ## Deployment
 
 - Frontend: GitHub Actions -> GitHub Pages
-- Data source: Google Sheet + Apps Script JSON
+- Data source: Google Sheet export CSV
 
 ### GitHub Actions
 
 Workflow deploy ở [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
-Cần đặt repository variable:
+Cần đặt repository variables:
 
-- `SHEET_JSON_URL` = URL JSON public từ Apps Script
+- `SHEET_CATEGORIES_URL` = URL CSV export public của tab `Categories`
+- `SHEET_ITEMS_URL` = URL CSV export public của tab `MenuItems`
 
 Các biến SEO tùy chọn:
 
 - `PUBLIC_BUSINESS_TELEPHONE`
 - `PUBLIC_BUSINESS_POSTAL_CODE`
 - `PUBLIC_BUSINESS_PRICE_RANGE`
-
-## Admin CRUD
-
-Để bật CRUD category và menu item:
-
-1. Tạo Apps Script theo hướng dẫn trong [docs/GOOGLE_SHEET_APPS_SCRIPT.md](docs/GOOGLE_SHEET_APPS_SCRIPT.md).
-2. Đặt script property `ADMIN_KEY` trong Apps Script.
-3. Deploy web app và mở `?view=admin` để dùng UI CRUD.
 
 ## Notes
 

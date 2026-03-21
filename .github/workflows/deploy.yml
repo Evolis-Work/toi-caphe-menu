@@ -37,7 +37,8 @@ jobs:
 
       - name: Build
         env:
-          SHEET_JSON_URL: ${{ vars.SHEET_JSON_URL }}
+          SHEET_CATEGORIES_URL: ${{ vars.SHEET_CATEGORIES_URL }}
+          SHEET_ITEMS_URL: ${{ vars.SHEET_ITEMS_URL }}
           PUBLIC_BUSINESS_TELEPHONE: ${{ vars.PUBLIC_BUSINESS_TELEPHONE }}
           PUBLIC_BUSINESS_POSTAL_CODE: ${{ vars.PUBLIC_BUSINESS_POSTAL_CODE }}
           PUBLIC_BUSINESS_PRICE_RANGE: ${{ vars.PUBLIC_BUSINESS_PRICE_RANGE }}

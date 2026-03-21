@@ -96,6 +96,104 @@ function parseBoolean(value) {
   return false;
 }
 
+function parseDelimitedText(text, delimiter) {
+  const rows = [];
+  let currentRow = [];
+  let cell = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+
+    if (inQuotes) {
+      if (char === "\"") {
+        if (next === "\"") {
+          cell += "\"";
+          index += 1;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        cell += char;
+      }
+      continue;
+    }
+
+    if (char === "\"") {
+      inQuotes = true;
+      continue;
+    }
+
+    if (char === delimiter) {
+      currentRow.push(cell);
+      cell = "";
+      continue;
+    }
+
+    if (char === "\n") {
+      currentRow.push(cell);
+      rows.push(currentRow);
+      currentRow = [];
+      cell = "";
+      continue;
+    }
+
+    if (char !== "\r") {
+      cell += char;
+    }
+  }
+
+  currentRow.push(cell);
+  rows.push(currentRow);
+
+  return rows.filter((row) => row.some((value) => String(value).trim() !== ""));
+}
+
+function rowsToObjects(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return [];
+  }
+
+  const [headerRow, ...bodyRows] = rows;
+  if (!Array.isArray(headerRow)) {
+    return [];
+  }
+
+  const headers = headerRow.map((header) => String(header ?? "").trim().replace(/^\uFEFF/, ""));
+
+  return bodyRows
+    .filter((row) => Array.isArray(row))
+    .map((row) =>
+      headers.reduce((acc, header, index) => {
+        if (header) {
+          acc[header] = row[index];
+        }
+        return acc;
+      }, {})
+    );
+}
+
+function parseSheetText(text) {
+  const trimmed = String(text ?? "").trim();
+  if (!trimmed) {
+    return [];
+  }
+
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      const payload = JSON.parse(trimmed);
+      return normalizeSheetPayload(payload);
+    } catch {
+      // fall through to delimited text parsing
+    }
+  }
+
+  const firstLine = trimmed.split(/\r?\n/, 1)[0] ?? "";
+  const delimiter = firstLine.includes("\t") && !firstLine.includes(",") ? "\t" : ",";
+  return rowsToObjects(parseDelimitedText(trimmed, delimiter));
+}
+
 function parsePrice(value) {
   if (typeof value === "number") {
     return value;
@@ -292,7 +390,7 @@ async function downloadMenuImages(items) {
   return sourceToFile;
 }
 
-async function fetchJson(url, timeoutMs = 12000) {
+async function fetchText(url, timeoutMs = 12000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -303,7 +401,7 @@ async function fetchJson(url, timeoutMs = 12000) {
       throw new Error(`Sheet request failed: ${response.status}`);
     }
 
-    return response.json();
+    return response.text();
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       throw new Error(`Sheet request timed out after ${timeoutMs}ms`);
@@ -395,8 +493,8 @@ function sortGeneratedRows(rows, categoryOrder = []) {
 }
 
 function toGeneratedRows(sheetPayload) {
-  const rows = normalizeSheetPayload(sheetPayload);
-  const categoryOrder = extractCategoryOrder(sheetPayload);
+  const rows = normalizeSheetPayload(sheetPayload.rows ?? sheetPayload.items ?? sheetPayload);
+  const categoryOrder = extractCategoryOrder(sheetPayload.categories);
   const normalizedRows = rows
     .map((row) => toRow(row, String(row.category ?? "")))
     .filter((item) => item.category && item.name && !Number.isNaN(item.price));
@@ -409,14 +507,24 @@ async function main() {
   const sampleRows = await loadSampleRows();
   const existingGeneratedRows = await loadExistingGeneratedRows();
 
-  const sheetUrl = process.env.SHEET_JSON_URL?.trim();
+  const itemsUrl = process.env.SHEET_ITEMS_URL?.trim();
+  const categoriesUrl = process.env.SHEET_CATEGORIES_URL?.trim();
   const strictMode = parseBoolean(process.env.MENU_SYNC_STRICT);
 
   let rows = existingGeneratedRows.length > 0 ? existingGeneratedRows : sampleRows;
 
-  if (sheetUrl) {
+  if (itemsUrl) {
     try {
-      const sheetPayload = await fetchJson(sheetUrl);
+      const [itemsText, categoriesText] = await Promise.all([
+        fetchText(itemsUrl),
+        categoriesUrl ? fetchText(categoriesUrl) : Promise.resolve(""),
+      ]);
+
+      const sheetPayload = {
+        rows: parseSheetText(itemsText),
+        categories: categoriesUrl ? parseSheetText(categoriesText) : [],
+      };
+
       const generatedRows = toGeneratedRows(sheetPayload);
       if (generatedRows.length > 0) {
         rows = generatedRows;
@@ -443,9 +551,9 @@ async function main() {
       }
     }
   } else {
-    console.warn("[sync-menu] SHEET_JSON_URL missing, keeping existing generated menu if available.");
+    console.warn("[sync-menu] SHEET_ITEMS_URL missing, keeping existing generated menu if available.");
     if (strictMode) {
-      throw new Error("SHEET_JSON_URL is missing in strict sync mode.");
+      throw new Error("SHEET_ITEMS_URL is missing in strict sync mode.");
     }
   }
 
