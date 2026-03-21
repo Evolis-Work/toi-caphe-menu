@@ -1,53 +1,83 @@
 # T.Ô.I COFFEE & TEA Menu
 
-Static digital menu built with Astro. Data is loaded from Google Sheets JSON at build time.
+Monorepo cho digital menu của T.Ô.I COFFEE & TEA.
 
-## Features
+- `frontend/`: Astro + React, deploy lên GitHub Pages.
+- `backend/`: Strapi app để quản lý menu, deploy lên Strapi Cloud Free.
 
-- Mobile-first digital menu for QR scan flow
-- Grouped categories with sticky category navigation
-- Search menu items (accent-insensitive)
-- Client-side filters (`available`, `bestseller`) and price sorting
-- Build-time Google Sheets fetch with validation + fallback sample data
-- GitHub Pages deployment with scheduled rebuild (30 minutes)
+## Architecture
 
-## Local development
+Luồng dữ liệu chính:
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Configure environment:
-   ```bash
-   cp .env.example .env
-   ```
-3. Add `SHEET_JSON_URL` into `.env` (optional, fallback sample data is available).
-4. Run dev server:
-   ```bash
-   npm run dev
-   ```
+`Strapi Cloud -> Frontend Astro -> GitHub Pages`
 
-## Data columns required
+Frontend fetch dữ liệu public từ Strapi Cloud, render menu, search, sticky category, scrollspy. Nếu Strapi lỗi, hệ thống vẫn có fallback sample data local để tránh menu trắng.
+
+## Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+Scripts root sẽ chạy vào `frontend/` tự động.
+
+### Backend
+
+```bash
+npm run backend:dev
+npm run backend:build
+npm run backend:start
+```
+
+### Environment
+
+Copy `frontend/.env.example` thành `.env` nếu cần local override:
+
+- `PUBLIC_STRAPI_URL`
+- `PUBLIC_STRAPI_ADMIN_URL`
+- `PUBLIC_BUSINESS_TELEPHONE`
+- `PUBLIC_BUSINESS_POSTAL_CODE`
+- `PUBLIC_BUSINESS_PRICE_RANGE`
+
+## Backend
+
+`backend/` sẽ chứa Strapi project và schema quản trị.
+
+Khuyến nghị collection types:
 
 - `category`
-- `name`
-- `price`
-- `description`
-- `image`
-- `available`
-- `bestseller`
-- `temp` (`hot` | `cold` | `both`)
+  - `name` (text)
+  - `slug` (uid)
+  - `order` (integer)
+  - `icon` (text)
+- `menu-item`
+  - `name` (text)
+  - `slug` (uid)
+  - `price` (integer)
+  - `description` (text)
+  - `temp` (enum: `hot`, `cold`, `both`, `none`)
+  - `available` (boolean)
+  - `bestseller` (boolean)
+  - `order` (integer)
+  - `image` (media)
+  - `category` (relation many-to-one)
 
-## Deploy
+## Deployment
 
-GitHub Actions workflow is at `.github/workflows/deploy.yml`.
+- Frontend: GitHub Actions -> GitHub Pages
+- Backend: Strapi Cloud Free
 
-- Auto deploy on `main` push
-- Scheduled rebuild every 30 minutes
-- Manual deploy via `workflow_dispatch`
+### GitHub Actions
 
-Add `SHEET_JSON_URL` in GitHub repo secrets for production data.
+Workflow deploy frontend ở `.github/workflows/deploy.yml`.
 
-## Important config
+Cần đặt repository variable:
 
-- Update `repoName` and `site` in `astro.config.mjs` to match your GitHub account/repository before production deploy.
+- `PUBLIC_STRAPI_URL` = public Strapi Cloud URL
+
+## Notes
+
+- Nguồn dữ liệu chính là Strapi Cloud.
+- Admin trang cũ vẫn có thể dùng để hướng dẫn nội dung, nhưng nguồn dữ liệu chính là Strapi.
+- Frontend build dùng base path `/toi-caphe-menu` để chạy trên GitHub Pages.

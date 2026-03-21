@@ -1,0 +1,112 @@
+[
+  {
+    "category": {
+      "name": "Cafe",
+      "slug": "cafe",
+      "order": 1,
+      "icon": "coffee"
+    },
+    "items": [
+      {
+        "name": "Cafe sữa đá",
+        "slug": "cafe-sua-da",
+        "price": 29000,
+        "description": "Ngọt xinh vừa đủ, mát lạnh phát là thấy đời bớt drama.",
+        "temp": "cold",
+        "available": true,
+        "bestseller": true,
+        "order": 1
+      },
+      {
+        "name": "Cafe muối",
+        "slug": "cafe-muoi",
+        "price": 30000,
+        "description": "Kem muối mặn mặn béo béo ôm trọn cà phê đậm, cuốn kiểu không lối thoát.",
+        "temp": "cold",
+        "available": true,
+        "bestseller": false,
+        "order": 2
+      }
+    ]
+  },
+  {
+    "category": {
+      "name": "Trà",
+      "slug": "tra",
+      "order": 2,
+      "icon": "tea"
+    },
+    "items": [
+      {
+        "name": "Trà Chanh",
+        "slug": "tra-chanh",
+        "price": 15000,
+        "description": "Chua thanh mát cổ, cứu khát cực nhanh cho những ngày nắng cháy máy.",
+        "temp": "cold",
+        "available": true,
+        "bestseller": false,
+        "order": 1
+      },
+      {
+        "name": "Trà Lipton Đá, Nóng",
+        "slug": "tra-lipton-da-nong",
+        "price": 15000,
+        "description": "Classic never die: nóng êm êm, đá thì mát rượi, lúc nào cũng hợp.",
+        "temp": "both",
+        "available": true,
+        "bestseller": false,
+        "order": 2
+      }
+    ]
+  },
+  {
+    "category": {
+      "name": "Trà Nhiệt Đới",
+      "slug": "tra-nhiet-doi",
+      "order": 3,
+      "icon": "local_drink"
+    },
+    "items": [
+      {
+        "name": "Trà Đào",
+        "slug": "tra-dao",
+        "price": 25000,
+        "description": "Đào thơm mềm, trà thanh mát, sip một cái là thấy thơ liền.",
+        "temp": "cold",
+        "available": true,
+        "bestseller": true,
+        "order": 1
+      },
+      {
+        "name": "Trà Vải",
+        "slug": "tra-vai",
+        "price": 25000,
+        "description": "Vải ngọt dịu + trà mát lành, combo xinh yêu cho ngày dài.",
+        "temp": "cold",
+        "available": true,
+        "bestseller": false,
+        "order": 2
+      }
+    ]
+  },
+  {
+    "category": {
+      "name": "Soda",
+      "slug": "soda",
+      "order": 4,
+      "icon": "cognition"
+    },
+    "items": [
+      {
+        "name": "Soda Blue",
+        "slug": "soda-blue",
+        "price": 20000,
+        "description": "Màu xanh bắt mắt, gas nổ tanh tách, uống là thấy vui phết.",
+        "temp": "cold",
+        "available": true,
+        "bestseller": false,
+        "order": 1
+      }
+    ]
+  }
+]

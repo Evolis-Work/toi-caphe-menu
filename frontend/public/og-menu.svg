@@ -10,5 +10,5 @@
   <circle cx="120" cy="560" r="180" fill="#F3C899" fill-opacity="0.15"/>
   <text x="90" y="250" fill="#FFE8CC" font-size="76" font-family="Segoe UI, Arial, sans-serif" font-weight="700">T.Ô.I COFFEE &amp; TEA</text>
   <text x="90" y="340" fill="#FFF5E8" font-size="52" font-family="Segoe UI, Arial, sans-serif" font-weight="600">Digital Menu</text>
-  <text x="90" y="410" fill="#F6D9B6" font-size="32" font-family="Segoe UI, Arial, sans-serif">Cap nhat tu dong tu Google Sheets</text>
+  <text x="90" y="410" fill="#F6D9B6" font-size="32" font-family="Segoe UI, Arial, sans-serif">Cap nhat tu dong tu Strapi Cloud</text>
 </svg>
