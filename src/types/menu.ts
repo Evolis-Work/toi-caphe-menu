@@ -9,6 +9,7 @@ export interface MenuItem {
   available: boolean;
   bestseller: boolean;
   temp: MenuTemp;
+  order: number;
 }
 
 export interface MenuCategory {

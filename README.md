@@ -14,6 +14,8 @@ Nếu Sheet hoặc Apps Script lỗi, hệ thống sẽ giữ snapshot đã tạ
 
 Trong GitHub Actions, build chạy ở strict mode: nếu sync Sheet lỗi thì workflow fail thay vì publish snapshot cũ.
 
+Trang `/admin` là UI CRUD cho Google Sheet thông qua Apps Script. Trang này dùng endpoint JSON/POST cùng `SHEET_JSON_URL` và một `ADMIN_KEY` riêng đặt trong Script Properties của Apps Script.
+
 ## Chạy local
 
 ```bash
@@ -71,6 +73,14 @@ Các biến SEO tùy chọn:
 - `PUBLIC_BUSINESS_TELEPHONE`
 - `PUBLIC_BUSINESS_POSTAL_CODE`
 - `PUBLIC_BUSINESS_PRICE_RANGE`
+
+## Admin CRUD
+
+Để bật CRUD category và menu item:
+
+1. Tạo Apps Script theo hướng dẫn trong [docs/GOOGLE_SHEET_APPS_SCRIPT.md](docs/GOOGLE_SHEET_APPS_SCRIPT.md).
+2. Đặt script property `ADMIN_KEY` trong Apps Script.
+3. Dùng trang `/admin` của website để chỉnh dữ liệu.
 
 ## Notes
 

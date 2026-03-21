@@ -1,152 +1,18 @@
 ---
+import AdminCrudPage from "../components/admin/AdminCrudPage";
 import MainLayout from "../layouts/MainLayout.astro";
 
-const sheetJsonUrl = import.meta.env.SHEET_JSON_URL || "https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYED_APP_SCRIPT_ID/exec";
-
-const schemaData = [
-  { col: "category", example: "Cafe", note: "Tên danh mục hiển thị", badge: "Required" },
-  { col: "name", example: "Trà Đào", note: "Tên món hiển thị", badge: "Required" },
-  { col: "temp", example: "cold", note: "hot / cold / both / none", badge: "Enum" },
-  { col: "price", example: "25000", note: "Chỉ nhập số (VNĐ)", badge: "Number" },
-  { col: "description", example: "Đào thơm mềm, trà thanh mát...", note: "Mô tả ngắn cho menu", badge: "Optional" },
-  { col: "image", example: "https://...", note: "Ảnh món public URL", badge: "Optional" },
-  { col: "available", example: "TRUE", note: "Còn hàng hay không", badge: "Boolean" },
-  { col: "bestseller", example: "FALSE", note: "Món nổi bật", badge: "Boolean" },
-];
+const sheetJsonUrl = import.meta.env.SHEET_JSON_URL ?? "https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYED_APP_SCRIPT_ID/exec";
 ---
 
 <MainLayout
-  title="Data Portal | Lộc Cà Phê"
-  description="Trang hướng dẫn nhập liệu menu qua Google Sheet và Apps Script"
+  title="Admin | Lộc Cà Phê"
+  description="Trang quản trị menu Lộc Cà Phê để thêm, sửa, xoá category và món qua Google Sheet."
   canonicalUrl={Astro.url.href}
-  structuredData={undefined}
 >
   <Fragment slot="head">
     <meta name="robots" content="noindex,nofollow,noarchive" />
   </Fragment>
 
-  <div class="min-h-screen bg-luxury-bg text-luxury-text font-sans antialiased pb-20">
-    <div class="max-w-5xl mx-auto px-6 pt-12 space-y-12">
-      <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-luxury-border/30 pb-10">
-        <div class="space-y-2">
-          <div class="flex items-center gap-3">
-            <span class="font-bebas text-luxury-accent tracking-[0.3em] text-sm border border-luxury-accent/30 px-2 py-0.5">DATA PORTAL</span>
-          </div>
-          <h1 class="font-bebas text-5xl tracking-tight text-white uppercase">Quản Trị <span class="text-luxury-accent">Google Sheet</span></h1>
-          <p class="font-cormorant italic text-luxury-muted text-lg">
-            Dữ liệu menu được nhập trong Google Sheet, xuất ra JSON bằng Apps Script, rồi frontend build-time sync về GitHub Pages.
-          </p>
-        </div>
-
-        <div class="flex items-center gap-4">
-          <div class="text-right hidden md:block">
-            <p class="text-[10px] uppercase tracking-widest text-luxury-muted/50">Backend</p>
-            <p class="text-xs font-medium text-emerald-500 flex items-center justify-end gap-1.5">
-              <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Apps Script JSON
-            </p>
-          </div>
-        </div>
-      </header>
-
-      <section class="space-y-6">
-        <div class="flex items-center gap-4">
-          <h2 class="font-bebas text-xl tracking-widest text-white uppercase">Trung Tâm Hành Động</h2>
-          <div class="h-[1px] flex-1 bg-luxury-border/10"></div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          <a href={sheetJsonUrl} target="_blank" rel="noreferrer" class="group relative bg-emerald-950/20 border border-emerald-500/20 p-8 rounded-sm hover:border-emerald-500/50 transition-all duration-500 overflow-hidden">
-            <div class="relative z-10 space-y-4">
-              <div class="size-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined">table_view</span>
-              </div>
-              <div>
-                <h3 class="font-bebas text-2xl text-white tracking-wide uppercase">Mở JSON Endpoint</h3>
-                <p class="text-sm text-luxury-muted/80 leading-relaxed mt-2">Đây là URL mà build sẽ đọc trực tiếp. Endpoint nên trả về mảng rows phẳng với các cột menu.</p>
-              </div>
-            </div>
-            <span class="absolute top-4 right-4 material-symbols-outlined text-emerald-500/30 group-hover:translate-x-1 transition-transform">open_in_new</span>
-          </a>
-
-          <div class="relative bg-luxury-accent/5 border border-luxury-accent/20 p-8 rounded-sm overflow-hidden">
-            <div class="relative z-10 space-y-4">
-              <div class="size-12 bg-luxury-accent/10 rounded-full flex items-center justify-center text-luxury-accent">
-                <span class="material-symbols-outlined">smart_toy</span>
-              </div>
-              <div>
-                <h3 class="font-bebas text-2xl text-white tracking-wide uppercase">Apps Script Setup</h3>
-                <p class="text-sm text-luxury-muted/80 leading-relaxed mt-2">
-                  Tạo <code class="text-luxury-accent">doGet()</code> trong Apps Script để trả JSON public. Khi publish menu, chỉ cần build lại frontend là site tự cập nhật.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="space-y-8 bg-luxury-surface/20 border border-luxury-border/10 p-8 md:p-10 rounded-sm overflow-hidden">
-        <div class="space-y-2">
-          <h2 class="font-bebas text-2xl tracking-widest text-white uppercase">Schema tối thiểu cho Sheet</h2>
-          <p class="font-cormorant italic text-luxury-muted text-sm">Mỗi row là một món. Apps Script chỉ cần xuất JSON với các cột bên dưới là đủ để frontend render.</p>
-        </div>
-
-        <div class="overflow-x-auto luxury-scrollbar pb-2">
-          <table class="w-full text-left border-collapse min-w-[980px]">
-            <thead>
-              <tr class="border-b border-luxury-border/30 bg-white/[0.02]">
-                {schemaData.map((row) => (
-                  <th class="py-4 px-4 font-mono text-[11px] text-luxury-accent uppercase tracking-widest border-r border-luxury-border/10 last:border-0">
-                    {row.col}
-                    <span class="block text-[8px] font-sans text-luxury-muted/40 mt-1 uppercase font-normal">{row.badge}</span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody class="text-[13px]">
-              <tr class="border-b border-luxury-border/10">
-                {schemaData.map((row) => (
-                  <td class="py-6 px-4 text-luxury-muted border-r border-luxury-border/10 last:border-0 align-top">
-                    <p class="text-white mb-2 font-medium">{row.example}</p>
-                    <p class="text-[11px] text-luxury-muted/60 leading-relaxed italic">{row.note}</p>
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="space-y-10 py-10">
-        <div class="text-center space-y-2">
-          <h2 class="font-bebas text-2xl tracking-[0.3em] text-white uppercase">Quy Trình Cập Nhật</h2>
-          <div class="w-12 h-[1px] bg-luxury-accent mx-auto"></div>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-12 relative">
-          {[
-            { step: "01", title: "Nhập Dữ Liệu", desc: "Sửa category, tên món, giá, ảnh và trạng thái trực tiếp trong Google Sheet." },
-            { step: "02", title: "Publish JSON", desc: "Apps Script trả về JSON public để build sync lấy dữ liệu chuẩn hóa." },
-            { step: "03", title: "Build & Deploy", desc: "GitHub Actions sinh lại menu.generated.json và ảnh local rồi đẩy lên GitHub Pages." },
-          ].map((item) => (
-            <div class="relative space-y-4 group">
-              <span class="font-bebas text-6xl text-luxury-border/30 group-hover:text-luxury-accent/10 transition-colors duration-700 absolute -top-8 -left-2 select-none z-0">{item.step}</span>
-              <div class="relative z-10 space-y-2 pt-2">
-                <h3 class="font-bebas text-xl text-luxury-accent tracking-wide uppercase">{item.title}</h3>
-                <p class="text-sm text-luxury-muted/80 leading-relaxed font-sans">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <footer class="pt-20 text-center space-y-4 border-t border-luxury-border/10">
-        <p class="font-bebas text-xs tracking-[0.4em] text-luxury-muted/40 uppercase">© 2026 Lộc Cà Phê • GOOGLE SHEET MANAGEMENT</p>
-        <a href="/" class="inline-flex items-center gap-2 text-luxury-accent hover:gap-3 transition-all text-xs uppercase tracking-widest">
-          <span class="material-symbols-outlined text-sm">arrow_back</span>
-          Quay lại Menu chính
-        </a>
-      </footer>
-    </div>
-  </div>
+  <AdminCrudPage sheetJsonUrl={sheetJsonUrl} client:load />
 </MainLayout>

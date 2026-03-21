@@ -1,17 +1,29 @@
-# Google Sheet + Apps Script JSON Export
+# Google Sheet + Apps Script CRUD
 
-File này mô tả cách xuất Google Sheet ra JSON để frontend sync build-time.
+Tài liệu này mô tả luồng dữ liệu menu của dự án:
 
-## Mục tiêu
+- Google Sheet là nơi quản lý category và menu item
+- Apps Script xuất JSON cho frontend đọc khi build
+- Trang `/admin` gọi Apps Script để tạo, sửa, xoá dữ liệu
 
-- Google Sheet là nơi nhập dữ liệu menu.
-- Apps Script đọc sheet và trả JSON public.
-- Frontend chỉ cần fetch `SHEET_JSON_URL` khi build.
+## Sheet structure
 
-## Sheet columns
+Khuyến nghị tách thành 2 tab:
 
-Hàng đầu tiên nên là header với các cột:
+### `Categories`
 
+Header:
+
+- `id`
+- `name`
+- `icon`
+- `order`
+
+### `MenuItems`
+
+Header:
+
+- `id`
 - `category`
 - `name`
 - `temp`
@@ -20,50 +32,381 @@ Hàng đầu tiên nên là header với các cột:
 - `image`
 - `available`
 - `bestseller`
+- `order`
 
-## Apps Script example
+## Public JSON contract
+
+`doGet()` nên trả về:
+
+```json
+{
+  "categories": [],
+  "items": [],
+  "rows": []
+}
+```
+
+Ý nghĩa:
+
+- `categories`: data cho trang admin
+- `items`: data cho trang admin
+- `rows`: mảng phẳng để frontend build sync
+
+Frontend build chỉ cần `rows`.
+Admin page dùng `categories` + `items`.
+
+## Admin API contract
+
+`doPost()` nhận body JSON:
+
+```json
+{
+  "action": "createCategory",
+  "adminKey": "secret-key",
+  "data": {}
+}
+```
+
+Các action hỗ trợ:
+
+- `createCategory`
+- `updateCategory`
+- `deleteCategory`
+- `createMenuItem`
+- `updateMenuItem`
+- `deleteMenuItem`
+
+## Apps Script sample
 
 ```javascript
-function doGet() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Menu");
-  const values = sheet.getDataRange().getValues();
+const CONFIG = {
+  adminKey: PropertiesService.getScriptProperties().getProperty("ADMIN_KEY") || "",
+  categoriesSheetName: "Categories",
+  itemsSheetName: "MenuItems",
+};
 
+function json(payload) {
+  return ContentService.createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function parseBody(e) {
+  if (!e || !e.postData || !e.postData.contents) {
+    return {};
+  }
+  try {
+    return JSON.parse(e.postData.contents);
+  } catch (error) {
+    return {};
+  }
+}
+
+function requireAdminKey(adminKey) {
+  if (!CONFIG.adminKey) {
+    throw new Error("Missing ADMIN_KEY script property.");
+  }
+  if (String(adminKey || "") !== CONFIG.adminKey) {
+    throw new Error("Invalid admin key.");
+  }
+}
+
+function parseBoolean(value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value === "number") {
+    return value === 1;
+  }
+  if (typeof value === "string") {
+    return ["true", "1", "yes", "y"].includes(value.trim().toLowerCase());
+  }
+  return false;
+}
+
+function getSheet(name) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
+  if (!sheet) {
+    throw new Error(`Sheet not found: ${name}`);
+  }
+  return sheet;
+}
+
+function readTable(sheetName) {
+  const sheet = getSheet(sheetName);
+  const values = sheet.getDataRange().getValues();
   if (!values || values.length < 2) {
-    return ContentService
-      .createTextOutput(JSON.stringify([]))
-      .setMimeType(ContentService.MimeType.JSON);
+    return [];
   }
 
   const headers = values[0].map((header) => String(header || "").trim());
-  const rows = values.slice(1).filter((row) => row.some((cell) => cell !== ""));
+  return values
+    .slice(1)
+    .filter((row) => row.some((cell) => cell !== ""))
+    .map((row) =>
+      headers.reduce((acc, header, index) => {
+        if (header) {
+          acc[header] = row[index];
+        }
+        return acc;
+      }, {})
+    );
+}
 
-  const items = rows.map((row) => {
-    const item = {};
-    headers.forEach((header, index) => {
-      if (header) {
-        item[header] = row[index];
+function writeTable(sheetName, rows, headers) {
+  const sheet = getSheet(sheetName);
+  sheet.clearContents();
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length === 0) {
+    return;
+  }
+  sheet.getRange(2, 1, rows.length, headers.length).setValues(
+    rows.map((row) => headers.map((header) => row[header] ?? ""))
+  );
+}
+
+function uid() {
+  return Utilities.getUuid();
+}
+
+function readCategories() {
+  return readTable(CONFIG.categoriesSheetName).map((row) => ({
+    id: String(row.id || uid()),
+    name: String(row.name || "").trim(),
+    icon: String(row.icon || "").trim(),
+    order: Number(row.order || 0) || 0,
+  })).filter((row) => row.name);
+}
+
+function readItems() {
+  return readTable(CONFIG.itemsSheetName).map((row) => ({
+    id: String(row.id || uid()),
+    category: String(row.category || "").trim(),
+    name: String(row.name || "").trim(),
+    temp: String(row.temp || "none").trim().toLowerCase(),
+    price: Number(row.price || 0) || 0,
+    description: String(row.description || "").trim(),
+    image: String(row.image || "").trim(),
+    available: parseBoolean(row.available),
+    bestseller: parseBoolean(row.bestseller),
+    order: Number(row.order || 0) || 0,
+  })).filter((row) => row.category && row.name);
+}
+
+function syncCategoriesSheet(categories) {
+  writeTable(CONFIG.categoriesSheetName, categories, ["id", "name", "icon", "order"]);
+}
+
+function syncItemsSheet(items) {
+  writeTable(CONFIG.itemsSheetName, items, ["id", "category", "name", "temp", "price", "description", "image", "available", "bestseller", "order"]);
+}
+
+function doGet() {
+  const categories = readCategories();
+  const items = readItems();
+  return json({
+    categories,
+    items,
+    rows: items,
+  });
+}
+
+function doPost(e) {
+  try {
+    const body = parseBody(e);
+    requireAdminKey(body.adminKey);
+
+    switch (body.action) {
+      case "createCategory":
+        return json({ ok: true, data: createCategory(body.data || {}) });
+      case "updateCategory":
+        return json({ ok: true, data: updateCategory(body.id, body.data || {}) });
+      case "deleteCategory":
+        return json({ ok: true, data: deleteCategory(body.id) });
+      case "createMenuItem":
+        return json({ ok: true, data: createMenuItem(body.data || {}) });
+      case "updateMenuItem":
+        return json({ ok: true, data: updateMenuItem(body.id, body.data || {}) });
+      case "deleteMenuItem":
+        return json({ ok: true, data: deleteMenuItem(body.id) });
+      default:
+        return json({ ok: false, error: `Unknown action: ${body.action}` });
+    }
+  } catch (error) {
+    return json({ ok: false, error: String(error && error.message ? error.message : error) });
+  }
+}
+
+function createCategory(data) {
+  const categories = readCategories();
+  const name = String(data.name || "").trim();
+  const icon = String(data.icon || "").trim();
+  const order = Number(data.order || 0) || 0;
+
+  if (!name) {
+    throw new Error("Category name is required.");
+  }
+  if (categories.some((category) => category.name.toLowerCase() === name.toLowerCase())) {
+    throw new Error("Category already exists.");
+  }
+
+  const category = { id: uid(), name, icon, order };
+  categories.push(category);
+  categories.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, "vi"));
+  syncCategoriesSheet(categories);
+  return category;
+}
+
+function updateCategory(id, data) {
+  const categories = readCategories();
+  const items = readItems();
+  const index = categories.findIndex((category) => category.id === id);
+  if (index === -1) {
+    throw new Error("Category not found.");
+  }
+
+  const previous = categories[index];
+  const nextName = String(data.name || previous.name).trim();
+  const nextIcon = String(data.icon || "").trim();
+  const nextOrder = Number(data.order || 0) || 0;
+
+  categories[index] = {
+    ...previous,
+    name: nextName,
+    icon: nextIcon,
+    order: nextOrder,
+  };
+
+  if (previous.name !== nextName) {
+    items.forEach((item) => {
+      if (item.category === previous.name) {
+        item.category = nextName;
       }
     });
-    return item;
-  });
+    syncItemsSheet(items);
+  }
 
-  return ContentService
-    .createTextOutput(JSON.stringify(items))
-    .setMimeType(ContentService.MimeType.JSON);
+  categories.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, "vi"));
+  syncCategoriesSheet(categories);
+  return categories[index];
+}
+
+function deleteCategory(id) {
+  const categories = readCategories();
+  const items = readItems();
+  const category = categories.find((entry) => entry.id === id);
+  if (!category) {
+    throw new Error("Category not found.");
+  }
+
+  const nextCategories = categories.filter((entry) => entry.id !== id);
+  const nextItems = items.filter((item) => item.category !== category.name);
+  syncCategoriesSheet(nextCategories);
+  syncItemsSheet(nextItems);
+  return { deletedCategory: category.name, deletedItems: items.length - nextItems.length };
+}
+
+function createMenuItem(data) {
+  const categories = readCategories();
+  const items = readItems();
+  const category = String(data.category || "").trim();
+  const name = String(data.name || "").trim();
+  const item = {
+    id: uid(),
+    category,
+    name,
+    temp: String(data.temp || "none").trim().toLowerCase(),
+    price: Number(data.price || 0) || 0,
+    description: String(data.description || "").trim(),
+    image: String(data.image || "").trim(),
+    available: parseBoolean(data.available),
+    bestseller: parseBoolean(data.bestseller),
+    order: Number(data.order || 0) || 0,
+  };
+
+  if (!category || !name) {
+    throw new Error("Category and name are required.");
+  }
+  if (!categories.some((entry) => entry.name === category)) {
+    throw new Error(`Unknown category: ${category}`);
+  }
+
+  items.push(item);
+  items.sort((a, b) => a.category.localeCompare(b.category, "vi") || a.order - b.order || a.name.localeCompare(b.name, "vi"));
+  syncItemsSheet(items);
+  return item;
+}
+
+function updateMenuItem(id, data) {
+  const categories = readCategories();
+  const items = readItems();
+  const index = items.findIndex((item) => item.id === id);
+  if (index === -1) {
+    throw new Error("Menu item not found.");
+  }
+
+  const next = {
+    ...items[index],
+    category: String(data.category || items[index].category).trim(),
+    name: String(data.name || items[index].name).trim(),
+    temp: String(data.temp || items[index].temp || "none").trim().toLowerCase(),
+    price: Number(data.price ?? items[index].price) || 0,
+    description: String(data.description ?? items[index].description).trim(),
+    image: String(data.image ?? items[index].image).trim(),
+    available: data.available === undefined ? items[index].available : parseBoolean(data.available),
+    bestseller: data.bestseller === undefined ? items[index].bestseller : parseBoolean(data.bestseller),
+    order: Number(data.order ?? items[index].order) || 0,
+  };
+
+  if (!next.category || !next.name) {
+    throw new Error("Category and name are required.");
+  }
+  if (!categories.some((entry) => entry.name === next.category)) {
+    throw new Error(`Unknown category: ${next.category}`);
+  }
+
+  items[index] = next;
+  items.sort((a, b) => a.category.localeCompare(b.category, "vi") || a.order - b.order || a.name.localeCompare(b.name, "vi"));
+  syncItemsSheet(items);
+  return next;
+}
+
+function deleteMenuItem(id) {
+  const items = readItems();
+  const nextItems = items.filter((item) => item.id !== id);
+  if (nextItems.length === items.length) {
+    throw new Error("Menu item not found.");
+  }
+  syncItemsSheet(nextItems);
+  return { deleted: true };
 }
 ```
 
 ## Deploy
 
-1. Mở `Extensions -> Apps Script` trong Google Sheet.
-2. Dán đoạn code trên.
-3. `Deploy -> New deployment`.
-4. Chọn loại `Web app`.
-5. Set quyền truy cập `Anyone`.
-6. Copy URL `/exec` và gán vào `SHEET_JSON_URL`.
+1. Mở Google Sheet.
+2. Vào `Extensions -> Apps Script`.
+3. Dán code sample ở trên.
+4. Trong `Project Settings`, đặt script property:
+   - `ADMIN_KEY = <secret-key-your-choice>`
+5. Deploy dưới dạng `Web app`.
+6. Access: `Anyone`.
+7. Copy URL `/exec`.
+8. Gán URL đó vào `SHEET_JSON_URL`.
+
+## Admin page
+
+Trang `/admin` của frontend dùng cùng endpoint đó để:
+
+- load `categories` + `items`
+- tạo / sửa / xoá category
+- tạo / sửa / xoá menu item
+
+Trang này lưu `adminKey` trong `localStorage` để đỡ phải nhập lại mỗi lần mở.
 
 ## Notes
 
-- `price` có thể là string hoặc number, frontend build sẽ parse lại.
-- `available` / `bestseller` có thể là `TRUE/FALSE`, `true/false`, hoặc `1/0`.
-- `image` nên là URL public nếu muốn build tự tải ảnh về `public/menu-images/`.
+- `price` nên là số.
+- `available` và `bestseller` có thể là `TRUE/FALSE`, `true/false`, `1/0`.
+- `category` trên item phải khớp `name` của category.
+- Khi đổi tên category, Apps Script mẫu sẽ tự cập nhật tất cả item đang dùng category đó.
+- Khi xoá category, Apps Script mẫu sẽ xoá luôn toàn bộ item thuộc category đó.

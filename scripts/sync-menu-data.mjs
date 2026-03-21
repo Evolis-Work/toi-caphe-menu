@@ -323,7 +323,8 @@ function toRow(item, categoryName) {
     image: String(item.image ?? "").trim(),
     available: parseBoolean(item.available),
     bestseller: parseBoolean(item.bestseller),
-    temp: parseTemp(item.temp, categoryName)
+    temp: parseTemp(item.temp, categoryName),
+    order: parseOrder(item.order)
   };
 }
 
@@ -364,11 +365,43 @@ function normalizeSheetPayload(payload) {
   return [];
 }
 
+function extractCategoryOrder(sheetPayload) {
+  if (!sheetPayload || typeof sheetPayload !== "object" || !Array.isArray(sheetPayload.categories)) {
+    return [];
+  }
+
+  return sheetPayload.categories
+    .map((category) => String(category?.name ?? category?.category ?? "").trim())
+    .filter(Boolean);
+}
+
+function sortGeneratedRows(rows, categoryOrder = []) {
+  const orderedCategories = categoryOrder.length > 0 ? categoryOrder : [...new Set(rows.map((row) => row.category))];
+  const categoryIndex = new Map(orderedCategories.map((name, index) => [name, index]));
+
+  return [...rows].sort((a, b) => {
+    const categoryDelta = (categoryIndex.get(a.category) ?? Number.MAX_SAFE_INTEGER) - (categoryIndex.get(b.category) ?? Number.MAX_SAFE_INTEGER);
+    if (categoryDelta !== 0) {
+      return categoryDelta;
+    }
+    if (a.order !== b.order) {
+      return a.order - b.order;
+    }
+    if (a.available !== b.available) {
+      return a.available ? -1 : 1;
+    }
+    return a.name.localeCompare(b.name, "vi");
+  });
+}
+
 function toGeneratedRows(sheetPayload) {
   const rows = normalizeSheetPayload(sheetPayload);
-  return rows
+  const categoryOrder = extractCategoryOrder(sheetPayload);
+  const normalizedRows = rows
     .map((row) => toRow(row, String(row.category ?? "")))
     .filter((item) => item.category && item.name && !Number.isNaN(item.price));
+
+  return sortGeneratedRows(normalizedRows, categoryOrder);
 }
 
 async function main() {

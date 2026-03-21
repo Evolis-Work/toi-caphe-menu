@@ -67,6 +67,7 @@ function toMenuItem(row: SheetRow, rowIndex: number): MenuItem | null {
   const description = String(row.description ?? "").trim();
   const image = String(row.image ?? "").trim();
   const price = parsePrice(row.price);
+  const order = parsePrice(row.order);
 
   if (!category || !name || Number.isNaN(price)) {
     console.warn(`[menu] Invalid row ${rowIndex + 1}: category/name/price are required.`, row);
@@ -81,7 +82,8 @@ function toMenuItem(row: SheetRow, rowIndex: number): MenuItem | null {
     image,
     available: parseBoolean(row.available),
     bestseller: parseBoolean(row.bestseller),
-    temp: parseTemp(row.temp, category)
+    temp: parseTemp(row.temp, category),
+    order: Number.isNaN(order) ? 0 : order
   };
 }
 
@@ -106,8 +108,11 @@ function groupByCategory(items: MenuItem[], categoryOrder?: string[]): MenuCateg
         if (a.available !== b.available) {
           return a.available ? -1 : 1;
         }
+        if (a.order !== b.order) {
+          return a.order - b.order;
+        }
         return a.name.localeCompare(b.name, "vi");
-      })
+      }),
     }));
 }
 
