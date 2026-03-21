@@ -246,7 +246,8 @@ function makeImageFileName(categoryName, itemName, sourceUrl) {
 }
 
 function buildPublicImagePath(fileName) {
-  return `${normalizePublicBasePath(process.env.REPO_NAME ?? "/")}menu-images/${fileName}`;
+  const basePath = process.env.PUBLIC_BASE_PATH ?? "/toi-caphe-menu/";
+  return `${normalizePublicBasePath(basePath)}menu-images/${fileName}`;
 }
 
 async function downloadImageAsset(sourceUrl, targetPath) {
