@@ -10,12 +10,7 @@
     "dev": "astro dev --root frontend",
     "build": "astro build --root frontend",
     "preview": "astro preview --root frontend",
-    "check": "astro check --root frontend",
-    "backend:dev": "npm --prefix backend run develop",
-    "backend:build": "npm --prefix backend run build",
-    "backend:start": "npm --prefix backend run start",
-    "backend:import": "npm --prefix backend run import:menu",
-    "backend:import:cloud": "npm --prefix backend run import:cloud"
+    "check": "astro check --root frontend"
   },
   "devDependencies": {
     "@astrojs/react": "^5.0.1",

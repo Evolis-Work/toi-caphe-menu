@@ -3,16 +3,19 @@
 Monorepo cho digital menu của Lộc Cà Phê.
 
 - `frontend/`: Astro + React, deploy lên GitHub Pages.
-- `backend/`: Strapi app để quản lý menu, deploy lên Strapi Cloud Free.
+- `backend/`: thư mục legacy từ giai đoạn thử Strapi, không còn nằm trong luồng build chính.
 
-## Architecture
+## Kiến trúc hiện tại
 
 Luồng dữ liệu chính:
 
-`Strapi Cloud -> build sync -> frontend/src/data/menu.generated.json + frontend/public/menu-images/ -> GitHub Pages`
+`Google Sheet -> Apps Script JSON -> build sync -> frontend/src/data/menu.generated.json + frontend/public/menu-images/ -> GitHub Pages`
 
-Frontend không gọi Strapi API lúc runtime. Khi build, script sync sẽ lấy dữ liệu từ Strapi Cloud, sinh ra `menu.generated.json`, tải ảnh món về `frontend/public/menu-images/`, rồi frontend import file đó để render menu, search, sticky category, scrollspy. Nếu Strapi lỗi, hệ thống sẽ fallback sang sample data local để tránh menu trắng.
-Trong GitHub Actions, build chạy ở strict mode: nếu Strapi sync lỗi thì workflow fail thay vì publish snapshot cũ.
+Frontend không gọi API runtime. Khi build, script sync sẽ lấy dữ liệu từ `SHEET_JSON_URL`, sinh ra `menu.generated.json`, tải ảnh món về `frontend/public/menu-images/`, rồi frontend import file đó để render menu, search, sticky category, scrollspy.
+
+Nếu Sheet hoặc Apps Script lỗi, hệ thống sẽ giữ snapshot đã tạo gần nhất để site không bị trắng.
+
+Trong GitHub Actions, build chạy ở strict mode: nếu sync Sheet lỗi thì workflow fail thay vì publish snapshot cũ.
 
 ## Frontend
 
@@ -23,51 +26,40 @@ npm run dev
 
 Scripts root sẽ chạy vào `frontend/` tự động.
 
-### Backend
-
-```bash
-npm run backend:dev
-npm run backend:build
-npm run backend:start
-```
-
 ### Environment
 
-Copy `frontend/.env.example` thành `.env` nếu cần local override:
+Copy `frontend/.env.example` thành `frontend/.env` nếu cần local override:
 
-- `PUBLIC_STRAPI_URL`
-- `PUBLIC_STRAPI_ADMIN_URL`
+- `SHEET_JSON_URL`
+- `SITE_URL`
+- `REPO_NAME`
 - `PUBLIC_BUSINESS_TELEPHONE`
 - `PUBLIC_BUSINESS_POSTAL_CODE`
 - `PUBLIC_BUSINESS_PRICE_RANGE`
 
-## Backend
+## Google Sheet + Apps Script
 
-`backend/` sẽ chứa Strapi project và schema quản trị.
+Sheet là nơi nhập dữ liệu menu. Apps Script xuất JSON công khai để build sync đọc.
 
-Khuyến nghị collection types:
+Ví dụ Apps Script export có trong [docs/GOOGLE_SHEET_APPS_SCRIPT.md](docs/GOOGLE_SHEET_APPS_SCRIPT.md).
+
+Khuyến nghị JSON trả về là một mảng row phẳng, mỗi row có các cột:
 
 - `category`
-  - `name` (text)
-  - `slug` (uid)
-  - `order` (integer)
-  - `icon` (text)
-- `menu-item`
-  - `name` (text)
-  - `slug` (uid)
-  - `price` (integer)
-  - `description` (text)
-  - `temp` (enum: `hot`, `cold`, `both`, `none`)
-  - `available` (boolean)
-  - `bestseller` (boolean)
-  - `order` (integer)
-  - `image` (media)
-  - `category` (relation many-to-one)
+- `name`
+- `temp`
+- `price`
+- `description`
+- `image`
+- `available`
+- `bestseller`
+
+Ảnh nên là URL public nếu muốn build tự tải ảnh về `frontend/public/menu-images/`.
 
 ## Deployment
 
 - Frontend: GitHub Actions -> GitHub Pages
-- Backend: Strapi Cloud Free
+- Data source: Google Sheet + Apps Script JSON
 
 ### GitHub Actions
 
@@ -75,12 +67,16 @@ Workflow deploy frontend ở `.github/workflows/deploy.yml`.
 
 Cần đặt repository variable:
 
-- `PUBLIC_STRAPI_URL` = public Strapi Cloud URL
-- `STRAPI_API_TOKEN` = token read-only của Strapi để build sync dữ liệu
+- `SHEET_JSON_URL` = URL JSON public từ Apps Script
+
+Các biến SEO tùy chọn:
+
+- `PUBLIC_BUSINESS_TELEPHONE`
+- `PUBLIC_BUSINESS_POSTAL_CODE`
+- `PUBLIC_BUSINESS_PRICE_RANGE`
 
 ## Notes
 
-- Nguồn dữ liệu chính là Strapi Cloud.
-- Admin trang cũ vẫn có thể dùng để hướng dẫn nội dung, nhưng nguồn dữ liệu chính là Strapi.
+- Nguồn dữ liệu chính là Google Sheet.
 - Frontend build dùng base path `/toi-caphe-menu` để chạy trên GitHub Pages.
 - Dữ liệu runtime của frontend là JSON tĩnh đã sinh từ bước build, không query API trực tiếp.

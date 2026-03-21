@@ -246,7 +246,7 @@ function makeImageFileName(categoryName, itemName, sourceUrl) {
 }
 
 function buildPublicImagePath(fileName) {
-  const basePath = process.env.PUBLIC_BASE_PATH ?? "/toi-caphe-menu/";
+  const basePath = process.env.PUBLIC_BASE_PATH ?? process.env.REPO_NAME ?? "/toi-caphe-menu/";
   return `${normalizePublicBasePath(basePath)}menu-images/${fileName}`;
 }
 
@@ -292,24 +292,21 @@ async function downloadMenuImages(items) {
   return sourceToFile;
 }
 
-async function fetchJson(baseUrl, path, token, timeoutMs = 12000) {
+async function fetchJson(url, timeoutMs = 12000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(new URL(path, normalizeBaseUrl(baseUrl)).toString(), {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      signal: controller.signal
-    });
+    const response = await fetch(url, { signal: controller.signal });
 
     if (!response.ok) {
-      throw new Error(`Strapi request failed: ${response.status}`);
+      throw new Error(`Sheet request failed: ${response.status}`);
     }
 
     return response.json();
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      throw new Error(`Strapi request timed out after ${timeoutMs}ms`);
+      throw new Error(`Sheet request timed out after ${timeoutMs}ms`);
     }
     throw error;
   } finally {
@@ -330,71 +327,48 @@ function toRow(item, categoryName) {
   };
 }
 
-function toGeneratedRows(categoriesPayload, menuItemsPayload, baseUrl) {
-  const categories = Array.isArray(categoriesPayload?.data) ? categoriesPayload.data : [];
-  const menuItems = Array.isArray(menuItemsPayload?.data) ? menuItemsPayload.data : [];
-
-  const parsedCategories = categories
-    .map((entry) => {
-      const category = unwrapRecord(entry);
-      const name = String(category?.name ?? "").trim();
-      if (!name) {
-        return null;
-      }
-
-      return {
-        name,
-        slug: String(category?.slug ?? "").trim() || slugify(name),
-        order: parseOrder(category?.order)
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, "vi"));
-
-  const parsedItems = menuItems
-    .map((entry) => {
-      const item = unwrapRecord(entry);
-      const name = String(item?.name ?? "").trim();
-      const price = parsePrice(item?.price);
-      const categoryName = getCategoryName(item?.category);
-
-      if (!name || Number.isNaN(price) || !categoryName) {
-        return null;
-      }
-
-      return {
-        categoryName,
-        row: {
-          categoryName,
-          name,
-          price,
-          description: String(item?.description ?? "").trim(),
-          image: resolveImageUrl(baseUrl, item?.image),
-          available: parseBoolean(item?.available),
-          bestseller: parseBoolean(item?.bestseller),
-          temp: parseTemp(item?.temp, categoryName),
-          order: parseOrder(item?.order)
-        }
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.row.order - b.row.order || a.row.name.localeCompare(b.row.name, "vi"));
-
-  const itemsByCategory = new Map();
-  for (const item of parsedItems) {
-    const matchedCategory =
-      parsedCategories.find((category) => category.name === item.categoryName || category.slug === item.categoryName)?.name ??
-      item.categoryName;
-    const existing = itemsByCategory.get(matchedCategory) ?? [];
-    existing.push(toRow(item.row, matchedCategory));
-    itemsByCategory.set(matchedCategory, existing);
+function normalizeSheetPayload(payload) {
+  if (Array.isArray(payload)) {
+    return payload;
   }
 
-  const categoryOrder = parsedCategories.length
-    ? parsedCategories.map((category) => category.name)
-    : [...new Set(parsedItems.map((item) => item.categoryName))];
+  if (!payload || typeof payload !== "object") {
+    return [];
+  }
 
-  return categoryOrder.flatMap((name) => itemsByCategory.get(name) ?? []);
+  const candidates = [payload.rows, payload.data, payload.items];
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate)) {
+      return candidate;
+    }
+  }
+
+  if (Array.isArray(payload.values) && payload.values.length > 0) {
+    const [headers, ...rows] = payload.values;
+    if (!Array.isArray(headers)) {
+      return [];
+    }
+
+    return rows
+      .filter((row) => Array.isArray(row))
+      .map((row) =>
+        headers.reduce((acc, header, index) => {
+          if (typeof header === "string" && header.trim()) {
+            acc[header.trim()] = row[index];
+          }
+          return acc;
+        }, {})
+      );
+  }
+
+  return [];
+}
+
+function toGeneratedRows(sheetPayload) {
+  const rows = normalizeSheetPayload(sheetPayload);
+  return rows
+    .map((row, index) => toMenuItem(row, index))
+    .filter((item) => item !== null);
 }
 
 async function main() {
@@ -402,19 +376,15 @@ async function main() {
   const sampleRows = await loadSampleRows();
   const existingGeneratedRows = await loadExistingGeneratedRows();
 
-  const baseUrl = process.env.PUBLIC_STRAPI_URL?.trim();
-  const token = process.env.STRAPI_API_TOKEN?.trim();
+  const sheetUrl = process.env.SHEET_JSON_URL?.trim();
   const strictMode = parseBoolean(process.env.MENU_SYNC_STRICT);
 
   let rows = existingGeneratedRows.length > 0 ? existingGeneratedRows : sampleRows;
 
-  if (baseUrl) {
+  if (sheetUrl) {
     try {
-      const [categoriesPayload, menuItemsPayload] = await Promise.all([
-        fetchJson(baseUrl, "/api/categories?sort[0]=order:asc", token),
-        fetchJson(baseUrl, "/api/menu-items?sort[0]=order:asc&populate=*", token)
-      ]);
-      const generatedRows = toGeneratedRows(categoriesPayload, menuItemsPayload, baseUrl);
+      const sheetPayload = await fetchJson(sheetUrl);
+      const generatedRows = toGeneratedRows(sheetPayload);
       if (generatedRows.length > 0) {
         rows = generatedRows;
         const sourceToFile = await downloadMenuImages(rows);
@@ -426,23 +396,23 @@ async function main() {
           );
           console.log(`[sync-menu] Downloaded ${sourceToFile.size} menu images.`);
         }
-        console.log(`[sync-menu] Generated ${rows.length} rows from Strapi.`);
+        console.log(`[sync-menu] Generated ${rows.length} rows from Google Sheet.`);
       } else {
-        console.warn("[sync-menu] Strapi returned no rows, keeping existing generated menu if available.");
+        console.warn("[sync-menu] Sheet returned no rows, keeping existing generated menu if available.");
         if (strictMode) {
-          throw new Error("Strapi returned no rows in strict sync mode.");
+          throw new Error("Sheet returned no rows in strict sync mode.");
         }
       }
     } catch (error) {
-      console.warn("[sync-menu] Failed to fetch Strapi data, keeping existing generated menu if available.", error);
+      console.warn("[sync-menu] Failed to fetch Google Sheet data, keeping existing generated menu if available.", error);
       if (strictMode) {
         throw error;
       }
     }
   } else {
-    console.warn("[sync-menu] PUBLIC_STRAPI_URL missing, keeping existing generated menu if available.");
+    console.warn("[sync-menu] SHEET_JSON_URL missing, keeping existing generated menu if available.");
     if (strictMode) {
-      throw new Error("PUBLIC_STRAPI_URL is missing in strict sync mode.");
+      throw new Error("SHEET_JSON_URL is missing in strict sync mode.");
     }
   }
 
