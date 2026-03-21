@@ -50,7 +50,7 @@ Biến môi trường cần nhớ:
 
 ## API public
 
-Frontend hiện không đọc API trực tiếp ở runtime. Build frontend sẽ gọi hai endpoint này, sau đó sinh `frontend/src/data/menu.generated.json`:
+Frontend hiện không đọc API trực tiếp ở runtime. Build frontend sẽ gọi hai endpoint này, sau đó sinh `frontend/src/data/menu.generated.json` và tải ảnh món về `frontend/public/menu-images/`:
 
 - `GET /api/categories?sort[0]=order:asc`
 - `GET /api/menu-items?sort[0]=order:asc&populate=*`

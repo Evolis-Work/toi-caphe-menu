@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 
 const rootDir = process.cwd();
@@ -6,6 +7,7 @@ const outputPaths = [
   path.join(rootDir, "frontend", "src", "data", "menu.generated.json"),
   path.join(rootDir, "frontend", "public", "menu.generated.json")
 ];
+const imageOutputDir = path.join(rootDir, "frontend", "public", "menu-images");
 const envFiles = [path.join(rootDir, ".env"), path.join(rootDir, "frontend", ".env")];
 
 function parseEnvContent(content) {
@@ -68,6 +70,16 @@ async function loadExistingGeneratedRows() {
 
 function normalizeBaseUrl(input) {
   return input.endsWith("/") ? input : `${input}/`;
+}
+
+function normalizePublicBasePath(input) {
+  const raw = String(input ?? "").trim();
+  if (!raw) {
+    return "/";
+  }
+
+  const withLeading = raw.startsWith("/") ? raw : `/${raw}`;
+  return withLeading.endsWith("/") ? withLeading : `${withLeading}/`;
 }
 
 function parseBoolean(value) {
@@ -188,7 +200,7 @@ function getMediaUrl(value) {
 
   const formats = media.formats;
   if (formats && typeof formats === "object") {
-    for (const format of ["large", "medium", "small", "thumbnail"]) {
+    for (const format of ["small", "medium", "large", "thumbnail"]) {
       const candidate = formats[format];
       if (candidate && typeof candidate.url === "string" && candidate.url.trim()) {
         return candidate.url.trim();
@@ -216,6 +228,69 @@ function resolveImageUrl(baseUrl, value) {
   return new URL(mediaUrl, normalizeBaseUrl(baseUrl)).toString();
 }
 
+function getImageFileExtension(sourceUrl) {
+  try {
+    const pathname = new URL(sourceUrl).pathname;
+    const ext = path.extname(pathname);
+    return ext || ".jpg";
+  } catch {
+    return ".jpg";
+  }
+}
+
+function makeImageFileName(categoryName, itemName, sourceUrl) {
+  const hash = createHash("sha1").update(sourceUrl).digest("hex").slice(0, 10);
+  const categorySlug = slugify(categoryName);
+  const itemSlug = slugify(itemName);
+  return `${categorySlug}-${itemSlug}-${hash}${getImageFileExtension(sourceUrl)}`;
+}
+
+function buildPublicImagePath(fileName) {
+  return `${normalizePublicBasePath(process.env.REPO_NAME ?? "/")}menu-images/${fileName}`;
+}
+
+async function downloadImageAsset(sourceUrl, targetPath) {
+  const response = await fetch(sourceUrl);
+  if (!response.ok) {
+    throw new Error(`Image request failed: ${response.status}`);
+  }
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  await writeFile(targetPath, buffer);
+}
+
+async function downloadMenuImages(items) {
+  const sourceToFile = new Map();
+  const downloads = [];
+
+  for (const item of items) {
+    if (!item.image || !/^https?:\/\//i.test(item.image)) {
+      continue;
+    }
+
+    if (sourceToFile.has(item.image)) {
+      continue;
+    }
+
+    const fileName = makeImageFileName(item.category, item.name, item.image);
+    sourceToFile.set(item.image, fileName);
+    downloads.push({ sourceUrl: item.image, targetPath: path.join(imageOutputDir, fileName) });
+  }
+
+  if (downloads.length === 0) {
+    return sourceToFile;
+  }
+
+  await rm(imageOutputDir, { recursive: true, force: true });
+  await mkdir(imageOutputDir, { recursive: true });
+
+  for (const job of downloads) {
+    await downloadImageAsset(job.sourceUrl, job.targetPath);
+  }
+
+  return sourceToFile;
+}
+
 async function fetchJson(baseUrl, path, token, timeoutMs = 12000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -241,13 +316,13 @@ async function fetchJson(baseUrl, path, token, timeoutMs = 12000) {
   }
 }
 
-function toRow(item, categoryName, baseUrl) {
+function toRow(item, categoryName) {
   return {
     category: categoryName,
     name: String(item.name ?? "").trim(),
     price: Number(item.price ?? 0),
     description: String(item.description ?? "").trim(),
-    image: resolveImageUrl(baseUrl, item.image),
+    image: String(item.image ?? "").trim(),
     available: parseBoolean(item.available),
     bestseller: parseBoolean(item.bestseller),
     temp: parseTemp(item.temp, categoryName)
@@ -310,7 +385,7 @@ function toGeneratedRows(categoriesPayload, menuItemsPayload, baseUrl) {
       parsedCategories.find((category) => category.name === item.categoryName || category.slug === item.categoryName)?.name ??
       item.categoryName;
     const existing = itemsByCategory.get(matchedCategory) ?? [];
-    existing.push(toRow(item.row, matchedCategory, baseUrl));
+    existing.push(toRow(item.row, matchedCategory));
     itemsByCategory.set(matchedCategory, existing);
   }
 
@@ -341,6 +416,15 @@ async function main() {
       const generatedRows = toGeneratedRows(categoriesPayload, menuItemsPayload, baseUrl);
       if (generatedRows.length > 0) {
         rows = generatedRows;
+        const sourceToFile = await downloadMenuImages(rows);
+        if (sourceToFile.size > 0) {
+          rows = rows.map((row) =>
+            sourceToFile.has(row.image)
+              ? { ...row, image: buildPublicImagePath(sourceToFile.get(row.image)) }
+              : row
+          );
+          console.log(`[sync-menu] Downloaded ${sourceToFile.size} menu images.`);
+        }
         console.log(`[sync-menu] Generated ${rows.length} rows from Strapi.`);
       } else {
         console.warn("[sync-menu] Strapi returned no rows, keeping existing generated menu if available.");
