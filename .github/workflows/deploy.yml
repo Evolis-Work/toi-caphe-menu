@@ -39,6 +39,7 @@ jobs:
         env:
           PUBLIC_STRAPI_URL: ${{ vars.PUBLIC_STRAPI_URL }}
           STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
+          MENU_SYNC_STRICT: true
         run: npm run build
 
       - name: Setup Pages

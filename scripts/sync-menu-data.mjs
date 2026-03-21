@@ -318,6 +318,7 @@ async function main() {
 
   const baseUrl = process.env.PUBLIC_STRAPI_URL?.trim();
   const token = process.env.STRAPI_API_TOKEN?.trim();
+  const strictMode = parseBoolean(process.env.MENU_SYNC_STRICT);
 
   let rows = existingGeneratedRows.length > 0 ? existingGeneratedRows : sampleRows;
 
@@ -333,12 +334,25 @@ async function main() {
         console.log(`[sync-menu] Generated ${rows.length} rows from Strapi.`);
       } else {
         console.warn("[sync-menu] Strapi returned no rows, keeping existing generated menu if available.");
+        if (strictMode) {
+          throw new Error("Strapi returned no rows in strict sync mode.");
+        }
       }
     } catch (error) {
       console.warn("[sync-menu] Failed to fetch Strapi data, keeping existing generated menu if available.", error);
+      if (strictMode) {
+        throw error;
+      }
     }
   } else {
     console.warn("[sync-menu] PUBLIC_STRAPI_URL missing, keeping existing generated menu if available.");
+    if (strictMode) {
+      throw new Error("PUBLIC_STRAPI_URL is missing in strict sync mode.");
+    }
+  }
+
+  if (strictMode && rows.length === 0) {
+    throw new Error("Menu sync produced no rows in strict mode.");
   }
 
   for (const outputPath of outputPaths) {

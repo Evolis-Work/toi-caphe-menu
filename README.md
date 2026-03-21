@@ -12,6 +12,7 @@ Luồng dữ liệu chính:
 `Strapi Cloud -> build sync -> frontend/src/data/menu.generated.json -> GitHub Pages`
 
 Frontend không gọi Strapi API lúc runtime. Khi build, script sync sẽ lấy dữ liệu từ Strapi Cloud, sinh ra `menu.generated.json`, rồi frontend import file đó để render menu, search, sticky category, scrollspy. Nếu Strapi lỗi, hệ thống sẽ fallback sang sample data local để tránh menu trắng.
+Trong GitHub Actions, build chạy ở strict mode: nếu Strapi sync lỗi thì workflow fail thay vì publish snapshot cũ.
 
 ## Frontend
 
