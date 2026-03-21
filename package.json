@@ -7,10 +7,10 @@
     "sync:menu": "node ./scripts/sync-menu-data.mjs",
     "predev": "npm run sync:menu",
     "prebuild": "npm run sync:menu",
-    "dev": "astro dev --root frontend",
-    "build": "astro build --root frontend",
-    "preview": "astro preview --root frontend",
-    "check": "astro check --root frontend"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
   },
   "devDependencies": {
     "@astrojs/react": "^5.0.1",

@@ -4,11 +4,11 @@ import path from "node:path";
 
 const rootDir = process.cwd();
 const outputPaths = [
-  path.join(rootDir, "frontend", "src", "data", "menu.generated.json"),
-  path.join(rootDir, "frontend", "public", "menu.generated.json")
+  path.join(rootDir, "src", "data", "menu.generated.json"),
+  path.join(rootDir, "public", "menu.generated.json")
 ];
-const imageOutputDir = path.join(rootDir, "frontend", "public", "menu-images");
-const envFiles = [path.join(rootDir, ".env"), path.join(rootDir, "frontend", ".env")];
+const imageOutputDir = path.join(rootDir, "public", "menu-images");
+const envFiles = [path.join(rootDir, ".env")];
 
 function parseEnvContent(content) {
   const result = {};
@@ -53,14 +53,14 @@ async function loadEnvFiles() {
 }
 
 async function loadSampleRows() {
-  const samplePath = path.join(rootDir, "frontend", "src", "data", "menu.sample.json");
+  const samplePath = path.join(rootDir, "src", "data", "menu.sample.json");
   const content = await readFile(samplePath, "utf8");
   return JSON.parse(content);
 }
 
 async function loadExistingGeneratedRows() {
   try {
-    const generatedPath = path.join(rootDir, "frontend", "src", "data", "menu.generated.json");
+    const generatedPath = path.join(rootDir, "src", "data", "menu.generated.json");
     const content = await readFile(generatedPath, "utf8");
     return JSON.parse(content);
   } catch {

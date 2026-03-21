@@ -1,34 +1,31 @@
 # Lộc Cà Phê Menu
 
-Monorepo cho digital menu của Lộc Cà Phê.
+Digital menu static cho Lộc Cà Phê.
 
-- `frontend/`: Astro + React, deploy lên GitHub Pages.
-- `backend/`: thư mục legacy từ giai đoạn thử Strapi, không còn nằm trong luồng build chính.
-
-## Kiến trúc hiện tại
+## Kiến trúc
 
 Luồng dữ liệu chính:
 
-`Google Sheet -> Apps Script JSON -> build sync -> frontend/src/data/menu.generated.json + frontend/public/menu-images/ -> GitHub Pages`
+`Google Sheet -> Apps Script JSON -> build sync -> src/data/menu.generated.json + public/menu-images/ -> GitHub Pages`
 
-Frontend không gọi API runtime. Khi build, script sync sẽ lấy dữ liệu từ `SHEET_JSON_URL`, sinh ra `menu.generated.json`, tải ảnh món về `frontend/public/menu-images/`, rồi frontend import file đó để render menu, search, sticky category, scrollspy.
+Frontend không gọi API runtime. Khi build, script sync sẽ lấy dữ liệu từ `SHEET_JSON_URL`, sinh ra `menu.generated.json`, tải ảnh món về `public/menu-images/`, rồi frontend import file đó để render menu, search, sticky category, scrollspy.
 
 Nếu Sheet hoặc Apps Script lỗi, hệ thống sẽ giữ snapshot đã tạo gần nhất để site không bị trắng.
 
 Trong GitHub Actions, build chạy ở strict mode: nếu sync Sheet lỗi thì workflow fail thay vì publish snapshot cũ.
 
-## Frontend
+## Chạy local
 
 ```bash
 npm install
 npm run dev
 ```
 
-Scripts root sẽ chạy vào `frontend/` tự động.
+`npm run dev` và `npm run build` đều chạy `predev/prebuild` để sync dữ liệu trước.
 
-### Environment
+## Environment
 
-Copy `frontend/.env.example` thành `frontend/.env` nếu cần local override:
+Copy [.env.example](.env.example) nếu cần local override:
 
 - `SHEET_JSON_URL`
 - `SITE_URL`
@@ -54,7 +51,7 @@ Khuyến nghị JSON trả về là một mảng row phẳng, mỗi row có các
 - `available`
 - `bestseller`
 
-Ảnh nên là URL public nếu muốn build tự tải ảnh về `frontend/public/menu-images/`.
+Ảnh nên là URL public nếu muốn build tự tải ảnh về `public/menu-images/`.
 
 ## Deployment
 
@@ -63,7 +60,7 @@ Khuyến nghị JSON trả về là một mảng row phẳng, mỗi row có các
 
 ### GitHub Actions
 
-Workflow deploy frontend ở `.github/workflows/deploy.yml`.
+Workflow deploy ở [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
 Cần đặt repository variable:
 

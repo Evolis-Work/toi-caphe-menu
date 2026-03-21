@@ -66,4 +66,4 @@ function doGet() {
 
 - `price` có thể là string hoặc number, frontend build sẽ parse lại.
 - `available` / `bestseller` có thể là `TRUE/FALSE`, `true/false`, hoặc `1/0`.
-- `image` nên là URL public nếu muốn build tự tải ảnh về `frontend/public/menu-images/`.
+- `image` nên là URL public nếu muốn build tự tải ảnh về `public/menu-images/`.

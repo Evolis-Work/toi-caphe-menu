@@ -3,4 +3,5 @@ node_modules
 dist
 .astro
 .env
-frontend/public/menu-images/
+backend/
+public/menu-images/
