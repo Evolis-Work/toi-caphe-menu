@@ -162,35 +162,6 @@ function footerClass(active: boolean): string {
       </footer>
     </div>
 
-    <script is:inline>
-      (() => {
-        const openBtn = document.getElementById("open-site-menu");
-        const closeBtn = document.getElementById("close-site-menu");
-        const overlay = document.getElementById("site-menu-overlay");
-        const sheet = document.getElementById("site-menu-sheet");
-        const menuLinks = document.querySelectorAll(".site-menu-link");
-
-        if (!openBtn || !closeBtn || !overlay || !sheet) {
-          return;
-        }
-
-        const openMenu = () => {
-          overlay.hidden = false;
-          sheet.hidden = false;
-          sheet.setAttribute("aria-hidden", "false");
-        };
-
-        const closeMenu = () => {
-          overlay.hidden = true;
-          sheet.hidden = true;
-          sheet.setAttribute("aria-hidden", "true");
-        };
-
-        openBtn.addEventListener("click", openMenu);
-        closeBtn.addEventListener("click", closeMenu);
-        overlay.addEventListener("click", closeMenu);
-        menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
-      })();
-    </script>
+    <script src={withBase("site-menu.js")} defer></script>
   </body>
 </html>
