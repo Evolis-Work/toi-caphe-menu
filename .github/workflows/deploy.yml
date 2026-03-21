@@ -37,7 +37,7 @@ jobs:
 
       - name: Build
         env:
-          PUBLIC_STRAPI_URL: ${{ vars.PUBLIC_STRAPI_URL }}
+          PUBLIC_STRAPI_URL: https://splendid-activity-7b90452b27.strapiapp.com
           STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
           MENU_SYNC_STRICT: true
         run: npm run build
