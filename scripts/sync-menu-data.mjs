@@ -2,7 +2,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const rootDir = process.cwd();
-const outputPath = path.join(rootDir, "frontend", "src", "data", "menu.generated.json");
+const outputPaths = [
+  path.join(rootDir, "frontend", "src", "data", "menu.generated.json"),
+  path.join(rootDir, "frontend", "public", "menu.generated.json")
+];
 const envFiles = [path.join(rootDir, ".env"), path.join(rootDir, "frontend", ".env")];
 
 function parseEnvContent(content) {
@@ -51,6 +54,16 @@ async function loadSampleRows() {
   const samplePath = path.join(rootDir, "frontend", "src", "data", "menu.sample.json");
   const content = await readFile(samplePath, "utf8");
   return JSON.parse(content);
+}
+
+async function loadExistingGeneratedRows() {
+  try {
+    const generatedPath = path.join(rootDir, "frontend", "src", "data", "menu.generated.json");
+    const content = await readFile(generatedPath, "utf8");
+    return JSON.parse(content);
+  } catch {
+    return [];
+  }
 }
 
 function normalizeBaseUrl(input) {
@@ -301,11 +314,12 @@ function toGeneratedRows(categoriesPayload, menuItemsPayload, baseUrl) {
 async function main() {
   await loadEnvFiles();
   const sampleRows = await loadSampleRows();
+  const existingGeneratedRows = await loadExistingGeneratedRows();
 
   const baseUrl = process.env.PUBLIC_STRAPI_URL?.trim();
   const token = process.env.STRAPI_API_TOKEN?.trim();
 
-  let rows = sampleRows;
+  let rows = existingGeneratedRows.length > 0 ? existingGeneratedRows : sampleRows;
 
   if (baseUrl) {
     try {
@@ -318,17 +332,19 @@ async function main() {
         rows = generatedRows;
         console.log(`[sync-menu] Generated ${rows.length} rows from Strapi.`);
       } else {
-        console.warn("[sync-menu] Strapi returned no rows, falling back to sample menu.");
+        console.warn("[sync-menu] Strapi returned no rows, keeping existing generated menu if available.");
       }
     } catch (error) {
-      console.warn("[sync-menu] Failed to fetch Strapi data, falling back to sample menu.", error);
+      console.warn("[sync-menu] Failed to fetch Strapi data, keeping existing generated menu if available.", error);
     }
   } else {
-    console.warn("[sync-menu] PUBLIC_STRAPI_URL missing, falling back to sample menu.");
+    console.warn("[sync-menu] PUBLIC_STRAPI_URL missing, keeping existing generated menu if available.");
   }
 
-  await mkdir(path.dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, `${JSON.stringify(rows, null, 2)}\n`, "utf8");
+  for (const outputPath of outputPaths) {
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, `${JSON.stringify(rows, null, 2)}\n`, "utf8");
+  }
 }
 
 await main();
