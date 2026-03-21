@@ -298,14 +298,44 @@ function deleteMenuItem(id) {
   return { deleted: true };
 }
 
-function doGet() {
+function getAdminBootstrap() {
   const categories = readCategories();
   const items = readItems();
-  return json({
+  return {
     categories,
     items,
     rows: items,
-  });
+  };
+}
+
+function adminCreateCategory(adminKey, data) {
+  requireAdminKey(adminKey);
+  return createCategory(data || {});
+}
+
+function adminUpdateCategory(adminKey, id, data) {
+  requireAdminKey(adminKey);
+  return updateCategory(id, data || {});
+}
+
+function adminDeleteCategory(adminKey, id, cascade) {
+  requireAdminKey(adminKey);
+  return deleteCategory(id, cascade);
+}
+
+function adminCreateMenuItem(adminKey, data) {
+  requireAdminKey(adminKey);
+  return createMenuItem(data || {});
+}
+
+function adminUpdateMenuItem(adminKey, id, data) {
+  requireAdminKey(adminKey);
+  return updateMenuItem(id, data || {});
+}
+
+function adminDeleteMenuItem(adminKey, id) {
+  requireAdminKey(adminKey);
+  return deleteMenuItem(id);
 }
 
 function doPost(e) {
@@ -335,4 +365,21 @@ function doPost(e) {
       error: String(error && error.message ? error.message : error),
     });
   }
+}
+
+function doGet(e) {
+  const view = String(e && e.parameter && e.parameter.view ? e.parameter.view : "").trim().toLowerCase();
+  if (view === "admin") {
+    return HtmlService.createHtmlOutputFromFile("Admin")
+      .setTitle("Lộc Cà Phê Admin")
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
+
+  const categories = readCategories();
+  const items = readItems();
+  return json({
+    categories,
+    items,
+    rows: items,
+  });
 }

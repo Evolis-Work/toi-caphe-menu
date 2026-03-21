@@ -4,7 +4,7 @@ Tài liệu này mô tả luồng dữ liệu menu của dự án:
 
 - Google Sheet là nơi quản lý category và menu item
 - Apps Script xuất JSON cho frontend đọc khi build
-- Trang `/admin` gọi Apps Script để tạo, sửa, xoá dữ liệu
+- Apps Script HTML Service cung cấp UI CRUD tại `?view=admin`
 
 ## Sheet structure
 
@@ -395,7 +395,7 @@ function deleteMenuItem(id) {
 
 ## Admin page
 
-Trang `/admin` của frontend dùng cùng endpoint đó để:
+Mở web app với `?view=admin` để:
 
 - load `categories` + `items`
 - tạo / sửa / xoá category
