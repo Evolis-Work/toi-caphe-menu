@@ -11,7 +11,8 @@
     "backend:dev": "npm --prefix backend run develop",
     "backend:build": "npm --prefix backend run build",
     "backend:start": "npm --prefix backend run start",
-    "backend:import": "npm --prefix backend run import:menu"
+    "backend:import": "npm --prefix backend run import:menu",
+    "backend:import:cloud": "npm --prefix backend run import:cloud"
   },
   "devDependencies": {
     "@astrojs/react": "^5.0.1",
